@@ -11,5 +11,8 @@
     "url": "git+https://github.com/suscx/fragments.git"
   },
   "author": "Xi Chen",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "2.8.8"
+  }
 }
