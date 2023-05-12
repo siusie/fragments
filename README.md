@@ -15,7 +15,7 @@ The following will automatically start the server:
 
 `dev`: starts the server via `nodemon`
 
-`debug`:  same as `dev` + starts [node inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/) on port `9229` allowing a debugger to be attached
+`debug`:  same as `dev` + starts [node inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/) on port `9229`, allowing a debugger to be attached
 
 ```sh
 npm start
