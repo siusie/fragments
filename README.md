@@ -22,3 +22,5 @@ npm start
 npm run dev
 npm run debug
 ```
+
+While the server is running, executing `curl -s localhost:8080 | jq` in another terminal pipes the server response to `jq`, transforming it into a more human-readable format
