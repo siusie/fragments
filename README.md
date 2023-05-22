@@ -27,4 +27,4 @@ While the server is running, executing `curl -s localhost:8080 | jq` in another 
 
 (Windows environment) A note on `nodemon`, for future reference: to run it (i.e., with `npm run dev`), the [cross-env](https://www.npmjs.com/package/cross-env) package must be installed first
 
-`npm run coverage`: outputs information on which files and lines of code were run. Access `coverage/lcov-report/index.html` in a browser for a more detailed report
+`npm run coverage`: outputs information on which files and lines of code were run and generates a folder called *coverage*. Access `coverage/lcov-report/index.html` in a browser for a more detailed report
