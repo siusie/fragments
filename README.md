@@ -17,10 +17,16 @@ The following will automatically start the server:
 
 `debug`:  same as `dev` + starts [node inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/) on port `9229`, allowing a debugger to be attached
 
+`test`: run unit tests
+
+`test:watch`: re-run tests when code is updated
+
 ```sh
 npm start
 npm run dev
 npm run debug
+npm run test
+npm run test:watch
 ```
 
 While the server is running, executing `curl -s localhost:8080 | jq` in another terminal pipes the server response to `jq`, transforming it into a more human-readable format
