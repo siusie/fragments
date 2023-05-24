@@ -34,3 +34,14 @@ While the server is running, executing `curl -s localhost:8080 | jq` in another 
 (Windows environment) A note on `nodemon`, for future reference: to run it (i.e., with `npm run dev`), the [cross-env](https://www.npmjs.com/package/cross-env) package must be installed first
 
 `npm run coverage`: outputs information on which files and lines of code were run and generates a folder called *coverage*. Access `coverage/lcov-report/index.html` in a browser for a more detailed report
+
+## switching between different versions of node.js
+`nvm use --lts`: uses the LTS version of node
+
+`nvm use {whatever version has been installed}`: switch to another version, installed using `nvm install {version}`
+
+*Note that these commands are run while connected via SSH. See step 25 of Lab 4 for a more detailed explanation on `nvm`*
+
+`ssh -i {filename}.pem ec2-user@{public-dns}`
+
+When connecting to an EC2 instance using SSH (including copying files from the local computer to a remote computer), remember to specify the .pem file after `-i` 
