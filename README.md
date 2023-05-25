@@ -40,7 +40,7 @@ While the server is running, executing `curl -s localhost:8080 | jq` in another 
 
 `nvm use {whatever version has been installed}`: switch to another version, installed using `nvm install {version}`
 
-*Note that these commands are run while connected via SSH. See step 25 of Lab 4 for a more detailed explanation on* `nvm`
+*\**Note that these commands are ran while connected via SSH. See step 25 of Lab 4 for a more detailed explanation on* `nvm`
 
 `ssh -i {filename}.pem ec2-user@{public-dns}`
 
