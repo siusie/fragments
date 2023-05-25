@@ -40,9 +40,10 @@ describe('API Responses', () => {
     });
   });
 
-// testing generated response with data containing a fragment object
+// Test for a generated response containing a fragment object
 test('success response that contains an object' ,()=>{
 
+  // the fragment's metadata
   const data = {
     "fragment": {
       "id": "30a84843-0cd4-4975-95ba-b96112aea189",
