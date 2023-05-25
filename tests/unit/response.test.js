@@ -39,4 +39,30 @@ describe('API Responses', () => {
       b: 2,
     });
   });
+
+// testing generated response with data containing a fragment object
+test('success response that contains an object' ,()=>{
+
+  const data = {
+    "fragment": {
+      "id": "30a84843-0cd4-4975-95ba-b96112aea189",
+      "ownerId": "11d4c22e42c8f61feaba154683dea407b101cfd90987dda9e342843263ca420a",
+      "created": "2021-11-02T15:09:50.403Z",
+      "updated": "2021-11-02T15:09:50.403Z",
+      "type": "text/plain",
+      "size": 256,
+  }};
+
+  const successResponse = createSuccessResponse(data);
+
+  // testing response object's length
+  expect(Object.keys(successResponse)).toHaveLength(2);
+  expect(Object.keys(successResponse.fragment)).toHaveLength(6);
+
+  // response must contain a "status" property
+  expect(successResponse).toHaveProperty('status','ok');
+
+  // fragment object in the response must contain the following properties & values
+  expect(successResponse).toHaveProperty('fragment', {'id': '30a84843-0cd4-4975-95ba-b96112aea189','ownerId': '11d4c22e42c8f61feaba154683dea407b101cfd90987dda9e342843263ca420a','created': '2021-11-02T15:09:50.403Z','updated':'2021-11-02T15:09:50.403Z','type':'text/plain','size':256});
+  });
 });
