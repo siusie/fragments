@@ -1,6 +1,5 @@
 // test/unit/memory-db.test.js
 
-// Fix this path to point to your project's `memory-db.js` source file
 const MemoryDB = require('../../src/model/data/memory/memory-db');
 
 describe('memory-db', () => {
@@ -23,7 +22,7 @@ describe('memory-db', () => {
     expect(result).toEqual(data);
   });
 
-  // refer to: node.js Buffer
+  // see: node.js Buffer
   test('put() and get() work with Buffers', async () => {
     const data = Buffer.from([1, 2, 3]);
     await db.put('a', 'b', data);
