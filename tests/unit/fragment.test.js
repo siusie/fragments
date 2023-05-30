@@ -151,7 +151,7 @@ describe('Fragment class', () => {
       expect(fragment.mimeType).toEqual('text/plain');
     });
 
-    test('isText return expected results', () => {
+    test('isText returns expected results', () => {
       // Text fragment
       const fragment = new Fragment({
         ownerId: '1234',
@@ -232,7 +232,7 @@ describe('Fragment class', () => {
       expect(await Fragment.byUser(ownerId, true)).toEqual([fragment]);
     });
 
-    test('setData() throws if not give a Buffer', () => {
+    test('setData() throws if not given a Buffer', () => {
       const fragment = new Fragment({ ownerId: '123', type: 'text/plain', size: 0 });
       expect(() => fragment.setData()).rejects.toThrow();
     });
