@@ -84,7 +84,7 @@ class Fragment {
    * @returns Promise<Array<Fragment>>
    */
   static async byUser(ownerId, expand = false) { 
-    let fragmentsList = await listFragments(ownerId, expand);
+    let fragmentsList = await listFragments(hash(ownerId), expand);
     return fragmentsList;
   }
 
@@ -95,8 +95,8 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
-    let fragment = await readFragment(ownerId, id);
-    if (!(await readFragment(ownerId, id))) {
+    let fragment = await readFragment(hash(ownerId), id);
+    if (!(await readFragment(hash(ownerId), id))) {
       throw new Error(`fragment does not exist for this user`);
     }
     return fragment;
@@ -109,7 +109,7 @@ class Fragment {
    * @returns Promise<void>
    */
   static delete(ownerId, id) {    
-    let promise = deleteFragment(ownerId, id);
+    let promise = deleteFragment(hash(ownerId), id);
     return promise;
   }
 
@@ -119,6 +119,7 @@ class Fragment {
    */
   save() {
     writeFragment(this).then();
+    this.updated = (new Date).toISOString();
     return Promise.resolve();
   }
 
@@ -145,6 +146,7 @@ class Fragment {
 
     let promise = writeFragmentData(this.ownerId, this.id, data);
     this.size = Buffer.byteLength(data);
+    this.updated = (new Date).toISOString();
     return promise;
   }
 
