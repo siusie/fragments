@@ -40,6 +40,7 @@ const validTypes = [
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
 const isoDate = (new Date).toISOString();
 
+// ownerId and type are required
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     typeof id === 'string' ? this.id = id : this.id = randomUUID(id);
@@ -53,8 +54,7 @@ class Fragment {
       this.updated = updated.toISOString();
     }
     else {
-      this.created = isoDate;
-      this.updated = isoDate;
+      this.created, this.updated = isoDate;
     }   
  
     // Parsing the content-type header
