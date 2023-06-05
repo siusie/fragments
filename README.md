@@ -45,3 +45,15 @@ While the server is running, executing `curl -s localhost:8080 | jq` in another 
 `ssh -i {filename}.pem ec2-user@{public-dns}`
 
 When connecting to an EC2 instance using SSH (including copying files from the local computer to a remote computer), remember to specify the .pem file after `-i` 
+
+## authentication
+```sh
+src/
+├─ auth.js
+├─ auth/
+│  ├─ cognito.js
+│  ├─ basic-auth.js
+│  ├─ index.js
+...
+```
+`src/auth/index.js` chooses the authentication strategy - Cognito or Basic Authentication
