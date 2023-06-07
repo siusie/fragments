@@ -39,7 +39,25 @@ const app = express();
 app.use(pino);
 
 // Use security middleware
-app.use(helmet());
+// certain headers have been manually disabled
+// https://www.npmjs.com/package/helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    xDownloadOptions: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
+    originAgentCluster: false,
+    referrerPolicy: false,
+    strictTransportSecurity: false,
+    xContentTypeOptions: false,
+    xDnsPrefetchControl: false,
+    xFrameOptions: false,
+    xPermittedCrossDomainPolicies: false,
+    xXssProtection: false,
+    accessControlAllowOrigin: false,
+  })
+);
 
 // Use CORS middleware so we can make requests across origins
 app.use(cors());
