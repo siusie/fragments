@@ -14,8 +14,11 @@ const { Fragment} = require('../../model/fragment');
 
 const logger = require('../../logger');
 
-// Define our first route, which will be: GET /v1/fragments
+// GET /v1/fragments
 router.get('/fragments', require('./get'));
+
+// GET /v1/fragments/:id
+router.get('/fragments/:id', require('./get'));
 
 // Support sending various Content-Types on the body up to 5M in size
 // https://expressjs.com/en/api.html#express.raw
