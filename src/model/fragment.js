@@ -54,7 +54,8 @@ class Fragment {
       this.updated = updated.toISOString();
     }
     else {
-      this.created, this.updated = isoDate;
+      this.created = isoDate;
+      this.updated = isoDate;
     }   
  
     // Parsing the content-type header
@@ -118,9 +119,10 @@ class Fragment {
    * @returns Promise<void>
    */
   save() {
-    writeFragment(this).then();
-    this.updated = (new Date).toISOString();
-    return Promise.resolve();
+    writeFragment(this).then(() => {
+      this.updated = (new Date).toISOString();
+    });
+    return Promise.resolve();   
   }
 
   /**
