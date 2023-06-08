@@ -4,11 +4,10 @@ const { randomUUID } = require('crypto');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
 
-// for hashing emails (we are NOT storing the user's actual email address):
-const hash = require('../hash');
+// https://www.npmjs.com/package/mime-types
+const mime = require('mime-types');
 
-// fragment metadata details:
-// https://github.com/humphd/cloud-computing-for-programmers-summer-2023/blob/main/assignments/README.md#421-fragment-overview
+// const logger = require('../logger');
 
 // Functions for working with fragment metadata/data using our DB
 const {
@@ -23,6 +22,7 @@ const {
 // Accepted content types
 const validTypes = [
   `text/plain`,
+  `text/plain; charset=utf-8`,
   /*
    Currently, only text/plain is supported. Others will be added later.
 
@@ -44,7 +44,9 @@ const isoDate = (new Date).toISOString();
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     typeof id === 'string' ? this.id = id : this.id = randomUUID(id);
-    this.ownerId = hash(ownerId);
+
+    if (!ownerId) throw new Error(`ownerId is required`);
+    this.ownerId = ownerId;    
 
     // Converting an invalid date will generate an error 
     if (created) {
@@ -57,19 +59,20 @@ class Fragment {
       this.created = isoDate;
       this.updated = isoDate;
     }   
- 
-    // Parsing the content-type header
-    const c = contentType.parse(type);
+    
+    // checks if the content-type used to instantiate this fragment is of valid MIME type
+    const validType = mime.contentType(type);
 
-    if (!validTypes.includes(c.type)) {
-      throw new Error(`Invalid type; got ${c.type}`);
+    // throw an error if:
+    // type is valid but not supported
+    // OR type is not valid at all
+    if (!validType) {
+      throw new Error(`Invalid fragment type`);
     }
-    // Check if the passed-in type contains a parameter
-    if (Object.keys(c.parameters).length === 0) {
-      this.type = c.type;
-    } else {
-      this.type = type;
+    else if ((validType && !Fragment.isSupportedType(validType))) {
+      throw new Error(`Invalid type; received ${validType}`);
     }
+    this.type = type;
 
     // size must be a number
     if (typeof size !== 'number' || size < 0) {
@@ -85,7 +88,7 @@ class Fragment {
    * @returns Promise<Array<Fragment>>
    */
   static async byUser(ownerId, expand = false) { 
-    let fragmentsList = await listFragments(hash(ownerId), expand);
+    let fragmentsList = await listFragments((ownerId), expand);
     return fragmentsList;
   }
 
@@ -96,8 +99,8 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
-    let fragment = await readFragment(hash(ownerId), id);
-    if (!(await readFragment(hash(ownerId), id))) {
+    let fragment = await readFragment((ownerId), id);
+    if (!(await readFragment((ownerId), id))) {
       throw new Error(`fragment does not exist for this user`);
     }
     return fragment;
@@ -110,7 +113,7 @@ class Fragment {
    * @returns Promise<void>
    */
   static delete(ownerId, id) {    
-    let promise = deleteFragment(hash(ownerId), id);
+    let promise = deleteFragment((ownerId), id);
     return promise;
   }
 
@@ -175,10 +178,9 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
 
-  // TODO: update according to 
-  // https://github.com/humphd/cloud-computing-for-programmers-summer-2023/blob/main/assignments/README.md#451-valid-fragment-conversions
+  // currently only supports plain text
   get formats() {
-    const formats = ['text/plain'];
+    const formats = ['text/plain',];
     return formats;
   }
 
@@ -188,7 +190,7 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    return (value === 'text/plain' || value ==='text/plain; charset=utf-8');
+    return (validTypes.includes(value));
   }
 }
 
