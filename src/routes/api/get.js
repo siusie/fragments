@@ -13,11 +13,11 @@ function getFileExtension(filename) {
  * Get a list of fragments for the current user
  */
 module.exports = (req, res) => {
-    // logger.debug(`[get.js] current user: ${(req.user)}`);
+  // logger.debug(`[get.js] current user: ${(req.user)}`);
 
   // an ID is present in the url
   if (req.params.id) {
-      // logger.debug(`fragment id is type: ${typeof req.params.id}`);
+    // logger.debug(`fragment id is type: ${typeof req.params.id}`);
     const extension = getFileExtension(req.params.id);
     logger.debug(`[get.js] got extension: ${extension}`);
     
@@ -27,7 +27,7 @@ module.exports = (req, res) => {
 
       // extract the filename w/o extension
       const id = (extension === "txt") ? (req.params.id).split(".txt")[0] : req.params.id;
-      logger.debug(`chopped fragment id: ${((id))}`);
+      logger.debug(`chopped fragment id: ${id}`);
 
       Fragment.byId(req.user, id).then((fragment) => {
       fragment.getData().then((data) => {
@@ -44,13 +44,21 @@ module.exports = (req, res) => {
       res.status(415).json(createErrorResponse(415, `unable to convert to ${extension}`));
     }      
   }
+
+  // no ID, retrieve a list of fragments belonging to the current user
   else {
-    // TODO: this is just a placeholder to get something working...
-    const data = { fragments: [] };
-    Fragment.byUser(req.user).then((fragment) => {
-      logger.info(`[get.js] retrieved fragments: ${fragment}`);
-    })
-    // db.listFragments(req.)
-    res.status(200).json(createSuccessResponse(data));
+    // currently retrieves an array of fragment IDs
+    // still need to implement the `expand` functionality
+    // i.e., GET /fragments?expand=1
+    // let data = { fragments: [] };
+    Fragment.byUser(req.user)
+      .then((fragment) => {
+        const data = {fragments:fragment}       
+        logger.info(`[get.js] retrieved fragments: ${data}`);
+        res.status(200).json(createSuccessResponse(data));
+      })
+      .catch((err) => {
+        `Unable to retrieve fragments: ${err}`
+      });
   }
 };
