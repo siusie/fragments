@@ -7,28 +7,39 @@ const contentType = require('content-type');
 
 module.exports = (req, res) => {
 
-  logger.info(`[post.js] Incoming req.body is a buffer? ${Buffer.isBuffer(req.body)}`);
+  // logger.debug(`[post.js] Incoming req.body is a buffer? ${Buffer.isBuffer(req.body)} and its length is ${Buffer.byteLength(req.body)}`);
+  // logger.debug(`current user: ${(req.user)}`);
 
-  if (!Buffer.isBuffer(req.body)) { 
+  // generate an error response if:
+  // content type is invalid (req.body is not a buffer),
+  // file is empty (buffer bytes = 0)
+  if (!Buffer.isBuffer(req.body) || Buffer.byteLength(req.body) === 0) { 
     res.status(415).json(createErrorResponse(415, `content-type is not supported`));
   } else {
-    // https://fragments-api.com/v1/fragments/30a84843-0cd4-4975-95ba-b96112aea189
-    // logger.info(`request: ${(req.user)}`);
 
-    // Use info from req to initiate a fragment object
+    logger.debug(`[post.js] req.body: ${Buffer.isBuffer(req.body)}`);
     const { type } = contentType.parse(req);
-    const fragment = new Fragment({ ownerId: req.user, type: type });
-    fragment.save().then(fragment.setData(req.body)).catch(`error saving fragment object`);  // maybe here create an error message
-
-    // const baseUrl = (process.env.API_URL || req.headers.host);
-    // let url = new URL("/fragments", baseUrl);
-    // logger.info(`created URL: ${url}`);
+    logger.debug(`[post.js] type: ${type}`);
     
+    // create a new fragment object and save it to the db
+    let fragment = new Fragment({ ownerId: req.user, type: type });
 
-    res
-      .setHeader('Location', `${process.env.API_URL}/v1/fragments/${fragment.id}`)
-      .setHeader('Content-Type', type)
-      .status(201)
-      .json(createSuccessResponse({ fragment }));
+    fragment
+      .save()
+      .then(fragment.setData(req.body).then(() => {
+        logger.debug(`SAVED DATA SUCCESSFULLY`);
+
+        res
+          .setHeader('Location', `${process.env.API_URL || req.headers.host}/v1/fragments/${fragment.id}`)
+          .setHeader('Content-Type', type)
+          .status(201)
+          .json(createSuccessResponse({fragment}));
+        // logger.debug(`got back: ${JSON.stringify(createSuccessResponse({fragment}))}`); 
+        // const data = fragment.getData().then((d) => { d.string }).catch(logger.info(`ERROR`));
+        // logger.debug(`created fragment - ownerId: ${fragment.ownerId}, type: ${fragment.type}, data: ${(data.then((d)=>{d.string}))}`);        
+      }))      
+      .catch((err) => {
+        logger.error(`Error saving fragment: ${err}`);
+      });
   }
 };
