@@ -4,7 +4,8 @@ const request = require('supertest');
 const app = require('../../src/app');
 const logger = require('../../src/logger');
 const { Fragment } = require('../../src/model/fragment');
-const {createErrorResponse} = require('../../src/response');
+const { createErrorResponse } = require('../../src/response');
+const hash = require('../../src/hash');
 
 describe('GET /v1/fragments', () => {
 
@@ -22,22 +23,45 @@ describe('GET /v1/fragments', () => {
     expect(res.body.status).toBe('ok');
     expect(Array.isArray(res.body.fragments)).toBe(true);
   });  
+
+  test('retrieve a list of the current user\'s fragments', async () => {
+    const fragment1 = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
+    await fragment1.save();
+    await fragment1.setData(Buffer.from('Fragment 1'));
+
+    const fragment2 = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain' });
+    await fragment2.save();
+    await fragment2.setData(Buffer.from('Fragment 2'));
+
+    const fragment3 = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain; charset=utf-8', size: 0 });
+    await fragment3.save();
+    await fragment3.setData(Buffer.from('Fragment 3'));
+
+    const res = await request(app).get('/v1/fragments').auth('user2@email.com', 'password2');
+
+    // logger.debug(`got back: ${(res.body.fragments)}`)
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(Array.isArray(res.body.fragments)).toBe(true);
+    expect(res.body.fragments.length).not.toBe(0);
+  });
   
 });
 
 describe('GET /v1/fragments/:id', () => {
 
   test('retrieve a fragment\'s data by its id', async () => {
-    const fragment = new Fragment({ ownerId: 'user2@email.com', type: 'text/plain', size: 0 });
+    const fragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
     await fragment.setData(Buffer.from('This is a fragment'));
 
+    logger.debug(`ID used in URL: ${fragment.id}`);
     const res = await request(app)
       .get(`/v1/fragments/${fragment.id}`)
       .auth('user2@email.com', 'password2');
     
     const data = await fragment.getData();
-    logger.debug(`got back: ${(data)}`);
+    logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);
     expect(res.statusCode).toBe(200);
     expect(res.body.string).toBe(data.string);
   });
@@ -62,7 +86,7 @@ describe('GET /v1/fragments/:id', () => {
   });
 
   test('.txt extension returns the fragment\'s data', async () => {
-    const fragment = new Fragment({ ownerId: 'user2@email.com', type: 'text/plain', size: 0 });
+    const fragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
     await fragment.setData(Buffer.from('TEST FRAGMENT'));
 
@@ -77,7 +101,7 @@ describe('GET /v1/fragments/:id', () => {
     expect(res.body.string).toBe(data.string);
   });
 
-  test('unsupported extension in 415 error', async () => {
+  test('unsupported extension results in 415 error', async () => {
     const fragment = new Fragment({ ownerId: 'user2@email.com', type: 'text/plain', size: 0 });
     await fragment.save();
     await fragment.setData(Buffer.from('TEST FRAGMENT'));
@@ -86,11 +110,9 @@ describe('GET /v1/fragments/:id', () => {
       .get(`/v1/fragments/${fragment.id}.html`)
       .auth('user2@email.com', 'password2');
     
-    const errorResponse = createErrorResponse(415, `unable to convert to html`);
-    
+    const errorResponse = createErrorResponse(415, `unable to convert to html`);    
     logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
   });
-
 });
