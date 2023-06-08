@@ -14,12 +14,6 @@ const { Fragment} = require('../../model/fragment');
 
 const logger = require('../../logger');
 
-// GET /v1/fragments
-router.get('/fragments', require('./get'));
-
-// GET /v1/fragments/:id
-router.get('/fragments/:id', require('./get'));
-
 // Support sending various Content-Types on the body up to 5M in size
 // https://expressjs.com/en/api.html#express.raw
 const rawBody = () =>
@@ -36,8 +30,16 @@ const rawBody = () =>
     },
   });
 
-// Use a raw body parser for POST, which will give a `Buffer` Object or `{}` at `req.body`
-// You can use Buffer.isBuffer(req.body) to test if it was parsed by the raw body parser.
+/* 
+      ** Routes **
+*/
+// GET /v1/fragments
+router.get('/fragments', require('./get'));
+
+// GET /v1/fragments/:id
+router.get('/fragments/:id', require('./get'));
+
+// POST /v1/fragments
 router.post('/fragments', rawBody(), require('./post'));
 
 module.exports = router;
