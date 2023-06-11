@@ -13,11 +13,9 @@ function getFileExtension(filename) {
  * Get a list of fragments for the current user
  */
 module.exports = (req, res) => {
-  // logger.debug(`[get.js] current user: ${(req.user)}`);
 
   // an ID is present in the url
   if (req.params.id) {
-    // logger.debug(`fragment id is type: ${typeof req.params.id}`);
     const extension = getFileExtension(req.params.id);
     logger.debug(`[get.js] got extension: ${extension}`);
     
@@ -50,7 +48,6 @@ module.exports = (req, res) => {
     // currently retrieves an array of fragment IDs
     // still need to implement the `expand` functionality
     // i.e., GET /fragments?expand=1
-    // let data = { fragments: [] };
     Fragment.byUser(req.user)
       .then((fragment) => {
         const data = {fragments:fragment}       
