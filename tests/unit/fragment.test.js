@@ -1,5 +1,4 @@
 // test/unit/fragment.test.js
-// unit tests for src/model/fragment.js
 
 const { Fragment } = require('../../src/model/fragment');
 
