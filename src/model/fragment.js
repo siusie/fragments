@@ -64,8 +64,8 @@ class Fragment {
     const validType = mime.contentType(type);
 
     // throw an error if:
-    // type is valid but not supported
-    // OR type is not valid at all
+    // type is valid but not supported OR
+    // type is not valid at all
     if (!validType) {
       throw new Error(`Invalid fragment type`);
     }
@@ -88,7 +88,7 @@ class Fragment {
    * @returns Promise<Array<Fragment>>
    */
   static async byUser(ownerId, expand = false) { 
-    let fragmentsList = await listFragments((ownerId), expand);
+    let fragmentsList = await listFragments(ownerId, expand);
     return fragmentsList;
   }
 
@@ -99,7 +99,7 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
-    let fragment = await readFragment((ownerId), id);
+    let fragment = await readFragment(ownerId, id);
     if (!(await readFragment((ownerId), id))) {
       throw new Error(`fragment does not exist for this user`);
     }
@@ -113,7 +113,7 @@ class Fragment {
    * @returns Promise<void>
    */
   static delete(ownerId, id) {    
-    let promise = deleteFragment((ownerId), id);
+    let promise = deleteFragment(ownerId, id);
     return promise;
   }
 
