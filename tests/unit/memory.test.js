@@ -5,7 +5,7 @@ const { Fragment } = require('../../src/model/fragment');
 
 describe('testing calls to in-memory database', () => { 
 
-  // function for randomly generating unique email addresses
+  // A function for randomly generating unique email addresses
   const uniqueEmail = (email) => {
   const [name, domain] = email.split('@');
   const unique = Date.now();
