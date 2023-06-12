@@ -67,15 +67,9 @@ describe('POST /v1/fragments', () => {
       .auth('user1@email.com', 'password1')
       .set('Content-Type', 'text/plain')
       .send(('This is a fragment'));
-    
-    // const successResponse = createSuccessResponse({ fragment });
-    // const data = await fragment.getData();
-    // logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);    
-    // logger.debug(`got back: ${data}`); 
-    // logger.debug(`should be: ${JSON.stringify(successResponse)}`);
+  
     logger.debug(`got back: ${JSON.stringify(res, null, 4)}`); 
     expect(res.statusCode).toBe(201);
-    // expect(res.body).toMatchObject(successResponse);
   });
 
   test('POSTing a fragment object with no data generates 415 error', async () => {

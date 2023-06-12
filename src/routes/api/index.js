@@ -30,9 +30,7 @@ const rawBody = () =>
     },
   });
 
-/* 
-      ** Routes **
-*/
+
 // GET /v1/fragments
 router.get('/fragments', require('./get'));
 

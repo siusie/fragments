@@ -13,8 +13,6 @@ module.exports = (req, res) => {
   if (!Buffer.isBuffer(req.body) || Buffer.byteLength(req.body) === 0) { 
     res.status(415).json(createErrorResponse(415, `content-type is not supported`));
   } else {
-
-    logger.debug(`[post.js] req.body: ${Buffer.isBuffer(req.body)}`);
     const { type } = contentType.parse(req);
     logger.debug(`[post.js] type: ${type}`);
     
