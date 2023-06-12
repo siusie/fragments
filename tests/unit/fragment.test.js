@@ -117,6 +117,12 @@ describe('Fragment class', () => {
       });
       expect(Date.parse(fragment.updated)).not.toBeNaN();
     });
+
+    test('passing an invalid date throws an error', () => { 
+      expect(() => { new Fragment({ ownerId: 'user1', created: '10/31/2022', type: 'text/plain' }) }).toThrow();
+      expect(() => { new Fragment({ ownerId: 'user1', updated: '10/31/2022', type: 'text/plain' }) }).toThrow();
+    });
+
   });
 
   describe('isSupportedType()', () => {
