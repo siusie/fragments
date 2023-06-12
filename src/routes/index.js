@@ -11,7 +11,7 @@ const { createSuccessResponse } = require('../response');
 const router = express.Router();
 
 // Our authentication middleware
-const { authenticate } = require('../authorization/index');
+const { authenticate } = require('../authorization');
 
 /**
  * Expose all of our API routes on /v1/* to include an API version.
