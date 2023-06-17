@@ -48,8 +48,42 @@ describe('GET /v1/fragments', () => {
   
 });
 
-describe('GET /v1/fragments/:id', () => {
+describe('GET /v1/fragments?expand=1', () => {
+  test('list of fragments contains their metadata', async () => { 
+    const fragment1 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain', size: 0 });
+    await fragment1.save();
+    await fragment1.setData(Buffer.from('Fragment 1'));
 
+    const fragment2 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain' });
+    await fragment2.save();
+    await fragment2.setData(Buffer.from('Fragment 2'));
+
+    const fragment3 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain; charset=utf-8', size: 0 });
+    await fragment3.save();
+    await fragment3.setData(Buffer.from('Fragment 3'));
+
+    const res = await request(app).get('/v1/fragments?expand=1').auth('user1@email.com', 'password1');
+
+    // logger.debug(`got back: ${(res.body.fragments)}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(Array.isArray(res.body.fragments)).toBe(true);
+    expect(res.body.fragments.length).toBe(3);
+    
+    // each fragment object in the array must contain metadata (represented by 6 keys)
+    (res.body.fragments.forEach(fragment => {
+      expect(Object.keys(fragment).length).toBe(6);
+    }));
+  });
+
+  test('URL endpoint must be valid', async () => {
+    const res = await request(app).get('/v1/fragments??expand=1').auth('user1@email.com', 'password1');
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toEqual(createErrorResponse(404, 'invalid URL'));
+   });
+});
+
+describe('GET /v1/fragments/:id', () => {
   test('retrieve a fragment\'s data by its id', async () => {
     const fragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
