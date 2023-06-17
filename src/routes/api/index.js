@@ -31,13 +31,19 @@ const rawBody = () =>
   });
 
 
-// GET /v1/fragments
+// GET /fragments
 router.get('/fragments', require('./get'));
 
-// GET /v1/fragments/:id
+// GET /fragments/?expand=1
+router.get(`'/fragments?expand=1'`, require('./get'));
+
+// GET /fragments/:id
 router.get('/fragments/:id', require('./get'));
 
-// POST /v1/fragments
+// GET /fragments/:id/info
+router.get('/fragments/:id/info', require('./get'));
+
+// POST /fragments
 router.post('/fragments', rawBody(), require('./post'));
 
 module.exports = router;
