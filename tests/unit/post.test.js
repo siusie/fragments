@@ -83,5 +83,15 @@ describe('POST /v1/fragments', () => {
     // logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
-   });
+  });
+  
+  test('creating a fragment without specifying content-type generates 500 status code', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set("Content-Type", "\t")
+      .send('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in euismod nisi. Vivamus in dui non magna molestie consequat. Proin placerat condimentum cursus. Cras vitae magna venenatis, dapibus velit vel, euismod ante. Maecenas eget lacus erat. Aliquam erat volutpat. Donec cursus nunc feugiat, maximus ipsum iaculis, dignissim lectus. Mauris ut ligula et nulla ullamcorper fermentum ut eu velit.');
+    logger.debug(`response: ${JSON.stringify(res.body)}`)
+    expect(res.statusCode).toBe(500);
+  });
 });
