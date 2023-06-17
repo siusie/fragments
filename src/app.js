@@ -10,7 +10,6 @@ The file will
   d) add middleware for dealing with 404s; and
   e) add error-handling middleware.
 
-Currently, there is a reference to one route, a health check that quickly returns the operational status of the service. 
 The server's routes are defined in routes/ to prevent this file from becoming too large.
 
 */
