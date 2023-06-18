@@ -15,33 +15,40 @@ function getFileExtension(filename) {
 module.exports = (req, res) => {
 
   // an ID is present in the url
-  // TODO: GET /:id/info
   if (req.params.id) {
     const extension = getFileExtension(req.params.id);
     logger.debug(`[get.js] got extension: ${extension}`);
     
-    // attempt to retrieve the fragment from db
-    // currently only text/plain is supported
-    if (extension === "" || extension === "txt") {
+      // if the URL endpoint contains /:id/info,
+      // retrieve that fragment's metadata
+    if (req.originalUrl === `/v1/fragments/${req.params.id}/info`) {
 
-      // extract fragment id w/o extension
-      const id = (extension === "txt") ? (req.params.id).split(".txt")[0] : req.params.id;
-      logger.debug(`got fragment id: ${id}, original URL: ${req.originalUrl}`);
-
-      // retrieve the fragment's metadata
-      if (req.originalUrl === `/v1/fragments/${req.params.id}/info`) {
-        Fragment.byId(req.user, id)
+      // the id cannot contain an extension
+      if (extension) {
+        res.status(404).json(createErrorResponse(404, `Invalid ID, got ${req.params.id}`));
+      }
+      else {
+        Fragment.byId(req.user, req.params.id)
           .then((fragment) => {
             logger.info(`got fragment: ${JSON.stringify(fragment, null, 4)}`);
-            res.status(200).json(createSuccessResponse({fragment})); 
+            res.status(200).json(createSuccessResponse({ fragment }));
           })
           .catch((err) => {
             logger.error(`${err}`);
             res.status(404).json(createErrorResponse(404, `${err}`));
           });
       }
+    }
+    
+    // attempt to retrieve the fragment from db
+    // currently only text/plain is supported
+    else if (extension === "" || extension === "txt") {
+
+      // extract fragment id w/o extension
+      const id = (extension === "txt") ? (req.params.id).split(".txt")[0] : req.params.id;
+      logger.debug(`got fragment id: ${id}, original URL: ${req.originalUrl}`);
+
       // retrieve the fragment's data
-      else {
         Fragment.byId(req.user, id)
           .then((fragment) => {
           fragment.getData().then((data) => {
@@ -52,9 +59,7 @@ module.exports = (req, res) => {
           .catch((err) => {
             logger.error(`${err}`);
             res.status(404).json(createErrorResponse(404, `${err}`));      
-          });
-      }  
-    
+          });    
     }
     else {
       res.status(415).json(createErrorResponse(415, `unable to convert to ${extension}`));
@@ -64,7 +69,6 @@ module.exports = (req, res) => {
   // No ID in URL
   else {
     // URL doesn't contain the `expand` option -> return an array of fragment IDs
-    logger.info(`URL: ${req.originalUrl}`);
     if (req.originalUrl === '/v1/fragments') {
       Fragment.byUser(req.user)
         .then((fragment) => {
@@ -80,11 +84,11 @@ module.exports = (req, res) => {
       Fragment.byUser(req.user, true)
         .then((fragment) => {
           const data = { fragments: fragment };
-          logger.debug(`[get.js] retrieved fragments + metadata: ${JSON.stringify(data, null, 4)}`);
+          // logger.debug(`[get.js] retrieved fragments + metadata: ${JSON.stringify(data, null, 4)}`);
           res.status(200).json(createSuccessResponse(data));
         })
         .catch((err) => {
-          `Unable to retrieve fragments: ${err}`;
+          `Unable to retrieve fragments. ${err}`;
         });
     }
     else {
