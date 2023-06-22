@@ -24,21 +24,21 @@ const validTypes = [
   `text/plain`,
   `text/plain; charset=utf-8`,
   /*
-   Currently, only text/plain is supported. Others will be added later.
-
-  `text/markdown`,
-  `text/html`,
-  `application/json`,
-  `image/png`,
-  `image/jpeg`,
-  `image/webp`,
-  `image/gif`,
+   Currently, only text/plain is supported. 
+   Others will be added later...
+      `text/markdown`,
+      `text/html`,
+      `application/json`,
+      `image/png`,
+      `image/jpeg`,
+      `image/webp`,
+      `image/gif`,
   */
 ];
 
 // Generate an ISO 8601 Date string
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-const isoDate = (new Date).toISOString();
+const isoDate = () => (new Date).toISOString()
 
 // ownerId and type are required
 class Fragment {
@@ -56,8 +56,8 @@ class Fragment {
       this.updated = updated.toISOString();
     }
     else {
-      this.created = isoDate;
-      this.updated = isoDate;
+      this.created = isoDate();
+      this.updated = isoDate();
     }   
     
     // checks if the content-type used to instantiate this fragment is of valid MIME type
@@ -88,8 +88,7 @@ class Fragment {
    * @returns Promise<Array<Fragment>>
    */
   static async byUser(ownerId, expand = false) { 
-    let fragmentsList = await listFragments(ownerId, expand);
-    return fragmentsList;
+    return listFragments(ownerId, expand);
   }
 
   /**
@@ -112,19 +111,17 @@ class Fragment {
    * @param {string} id fragment's id
    * @returns Promise<void>
    */
-  static delete(ownerId, id) {    
-    let promise = deleteFragment(ownerId, id);
-    return promise;
+  static delete(ownerId, id) {
+    return deleteFragment(ownerId, id);
   }
 
   /**
    * Saves the current fragment to the database
    * @returns Promise<void>
    */
-  save() {
-    writeFragment(this).then(() => {
-      this.updated = (new Date).toISOString();
-    });
+  async save() {
+    await writeFragment(this);
+    this.updated = isoDate();
     return Promise.resolve();   
   }
 
@@ -133,8 +130,7 @@ class Fragment {
    * @returns Promise<Buffer>
    */
   getData() {
-    let data = readFragmentData(this.ownerId, this.id);
-    return Promise.resolve(data);
+    return readFragmentData(this.ownerId, this.id);
   }
 
   /**
@@ -151,7 +147,7 @@ class Fragment {
 
     let promise = writeFragmentData(this.ownerId, this.id, data);
     this.size = Buffer.byteLength(data);
-    this.updated = (new Date).toISOString();
+    this.updated = isoDate();
     return promise;
   }
 
