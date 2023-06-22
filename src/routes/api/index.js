@@ -30,18 +30,14 @@ const rawBody = () =>
     },
   });
 
-
 // GET /fragments
 router.get('/fragments', require('./get'));
 
-// GET /fragments/?expand=1
-router.get(`'/fragments?expand=1'`, require('./get'));
-
 // GET /fragments/:id
-router.get('/fragments/:id', require('./get'));
+router.get('/fragments/:id', require('./get-data'));
 
 // GET /fragments/:id/info
-router.get('/fragments/:id/info', require('./get'));
+router.get('/fragments/:id/info', require('./get-metadata'));
 
 // POST /fragments
 router.post('/fragments', rawBody(), require('./post'));
