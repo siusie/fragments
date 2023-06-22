@@ -42,6 +42,7 @@ const isoDate = () => (new Date).toISOString()
 
 // ownerId and type are required
 class Fragment {
+
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     typeof id === 'string' ? this.id = id : this.id = randomUUID(id);
 
@@ -186,7 +187,7 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    return (validTypes.includes(value));
+    return validTypes.includes(value);
   }
 }
 
