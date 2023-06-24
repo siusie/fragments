@@ -1,6 +1,6 @@
 // src/routes/api/get.js
 
-const { createSuccessResponse} = require('../../response');
+const { createSuccessResponse, createErrorResponse} = require('../../response');
 const logger = require('../../logger');
 const { Fragment } = require('../../model/fragment');
 
@@ -17,9 +17,11 @@ module.exports = async (req, res) => {
       data = { fragments: await Fragment.byUser(req.user) };
       return res.status(200).json(createSuccessResponse(data));
     }
-    // /v1/fragments?expand=1
-    data = { fragments: await Fragment.byUser(req.user, true) };
-    return res.status(200).json(createSuccessResponse(data));
+    else if (req.originalUrl === '/v1/fragments?expand=1') {
+      data = { fragments: await Fragment.byUser(req.user, true) };
+      return res.status(200).json(createSuccessResponse(data));
+    }
+    return res.status(404).json(createErrorResponse(404, `Invalid URL`));
   }
   catch (err) {
       logger.error(err);
