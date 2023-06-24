@@ -10,6 +10,6 @@ module.exports = async (req, res) => {
     return res.status(200).json(createSuccessResponse({ fragment }));
   } catch (err) {
     logger.error(`${err}`);
-    return res.status(404).json(createErrorResponse(404, `${err}`));
+    return res.status(404).json(createErrorResponse(404, `${err}. Got ID ${req.params.id}`));
   }
 };
