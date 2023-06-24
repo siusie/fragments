@@ -70,7 +70,7 @@ describe('GET /v1/fragments?expand=1', () => {
   test('URL endpoint must be valid', async () => {
     const res = await request(app).get('/v1/fragments??expand=1').auth('user1@email.com', 'password1');
     expect(res.statusCode).toBe(404);
-    expect(res.body).toEqual(createErrorResponse(404, 'invalid URL'));
+    expect(res.body).toEqual(createErrorResponse(404, 'Invalid URL'));
    });
 });
 
@@ -163,7 +163,7 @@ describe('GET /fragments/:id/info', () => {
       .get(`/v1/fragments/${fragment1.id}.txt/info`)
       .auth('user1@email.com', 'password1');
     
-    const errorResponse = createErrorResponse(404, `Invalid ID, got ${fragment1.id}.txt`);        
+    const errorResponse = createErrorResponse(404, `Error: fragment does not exist for this user. Got ID ${fragment1.id}.txt`);        
     expect(res.statusCode).toBe(404);
     expect(res.body).toEqual(errorResponse);
   });
