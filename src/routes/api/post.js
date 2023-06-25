@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   // content type is invalid (req.body is not a buffer),
   // file is empty (buffer bytes = 0)
   if (!Buffer.isBuffer(req.body) || Buffer.byteLength(req.body) === 0) { 
-    return res.status(415).json(createErrorResponse(415, `content-type is not supported`));
+    return res.status(415).json(createErrorResponse(415, 'content-type is not supported'));
   } 
 
   // getting the content type (specified by the client)
