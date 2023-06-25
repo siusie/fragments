@@ -97,15 +97,16 @@ describe('GET /v1/fragments/:id', () => {
     await fragment.setData(Buffer.from('This is a fragment'));
 
     let errorResponse;
-    await Fragment.byId(fragment.ownerId, 'invalid-id').catch((err) => {
-      errorResponse = createErrorResponse(404, `${err}`);
-    });
+    try {
+      await Fragment.byId(fragment.ownerId, 'invalid-id');
+    } catch (err) {
+      errorResponse = createErrorResponse(404, err.message);
+    }
 
     const res = await request(app)
       .get(`/v1/fragments/invalid-id`)
       .auth('user1@email.com', 'password1');    
-    
-    logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);
+
     expect(res.statusCode).toBe(404);
     expect(res.body).toStrictEqual(errorResponse);
   });
@@ -134,7 +135,7 @@ describe('GET /v1/fragments/:id', () => {
       .get(`/v1/fragments/${fragment1.id}.html`)
       .auth('user1@email.com', 'password1');
     
-    const errorResponse = createErrorResponse(415, `unable to convert to html`);    
+    const errorResponse = createErrorResponse(415, `Unable to convert to .html`);    
     logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
