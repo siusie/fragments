@@ -7,18 +7,13 @@ const { Fragment } = require('../../src/model/fragment');
 const wait = async (ms = 10) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const validTypes = [
-  `text/plain`,
-  /*
-   Currently, only text/plain is supported. Others will be added later.
-
-  `text/markdown`,
-  `text/html`,
-  `application/json`,
-  `image/png`,
-  `image/jpeg`,
-  `image/webp`,
-  `image/gif`,
-  */
+  'text/markdown',
+  'text/html',
+  'text/plain',
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif'
 ];
 
 describe('Fragment class', () => {
@@ -179,6 +174,7 @@ describe('Fragment class', () => {
   });
 
   describe('save(), getData(), setData(), byId(), byUser(), delete()', () => {
+
     test('byUser() returns an empty array if there are no fragments for this user', async () => {
       expect(await Fragment.byUser('1234')).toEqual([]);
     });
@@ -254,11 +250,10 @@ describe('Fragment class', () => {
     });
 
     test('a fragment can be deleted', async () => {
-      const fragment = new Fragment({ ownerId: '1234', type: 'text/plain', size: 0 });
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/plain; charset=iso-8859-1', size: 0 });
       await fragment.save();
       await fragment.setData(Buffer.from('a'));
-
-      await Fragment.delete('1234', fragment.id);
+      await Fragment.delete('1234', fragment.id);      
       expect(() => Fragment.byId('1234', fragment.id)).rejects.toThrow();
     });
   });
