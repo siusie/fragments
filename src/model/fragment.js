@@ -21,19 +21,13 @@ const {
 
 // Accepted content types
 const validTypes = [
-  `text/plain`,
-  `text/plain; charset=utf-8`,
-  /*
-   Currently, only text/plain is supported. 
-   Others will be added later...
-      `text/markdown`,
-      `text/html`,
-      `application/json`,
-      `image/png`,
-      `image/jpeg`,
-      `image/webp`,
-      `image/gif`,
-  */
+  'text/markdown',
+  'text/html',
+  'text/plain',
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif'
 ];
 
 // Generate an ISO 8601 Date string
@@ -59,23 +53,15 @@ class Fragment {
     else {
       this.created = isoDate();
       this.updated = isoDate();
-    }   
-    
-    // checks if the content-type used to instantiate this fragment is of valid MIME type
-    const validType = mime.contentType(type);
-
-    // throw an error if:
-    // type is valid but not supported OR
-    // type is not valid at all
-    if (!validType) {
-      throw new Error(`Invalid fragment type`);
     }
-    else if ((validType && !Fragment.isSupportedType(validType))) {
-      throw new Error(`Invalid type; received ${validType}`);
+
+    // Validating content-type
+    if (!Fragment.isSupportedType(type)) {
+      throw new Error(`Type is not supported; received ${type}`);
     }
     this.type = type;
 
-    // size must be a number
+    // Size must be a number
     if (typeof size !== 'number' || size < 0) {
       throw new Error(`size must be a non-negative number; got ${size}`);
     }
@@ -174,8 +160,6 @@ class Fragment {
    * Returns the formats into which this fragment type can be converted
    * @returns {Array<string>} list of supported mime types
    */
-
-  // currently only supports plain text
   get formats() {
     const formats = ['text/plain',];
     return formats;
@@ -183,11 +167,22 @@ class Fragment {
 
   /**
    * Returns true if we know how to work with this content type
-   * @param {string} value a Content-Type value (e.g., 'text/plain' or 'text/plain: charset=utf-8')
+   * @param {string} value a Content-Type value (e.g., 'text/plain' or 'text/plain; charset=utf-8')
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    return validTypes.includes(value);
+    if ((/^text\/[a-z]/).test(value)) {
+      const { type } = contentType.parse(value);
+      // logger.debug(`passed here ${type}`)
+      return mime.contentType(value) && validTypes.includes(type);     
+    }
+    if ((/^application\/json;*/).test(value)) {
+      return mime.contentType(value);  
+    }
+    if ((/^image\/[a-z]/).test(value)) {
+      return validTypes.includes(value);      
+    }
+    return false;
   }
 }
 
