@@ -6,7 +6,7 @@ const { createErrorResponse } = require('../../src/response');
 const logger = require('../../src/logger');
 
 describe('POST /v1/fragments', () => {
-  // If the request is missing the Authorization header, it should be forbidden
+  //  If the request is missing the Authorization header, it should be forbidden
   test('unauthenticated requests are denied', () => request(app).post('/v1/fragments').expect(401));
 
   // If the wrong username/password pair are used (no such user), it should be forbidden
@@ -61,7 +61,6 @@ describe('POST /v1/fragments', () => {
   });
 
   test('success response contains fragment data', async () => {
-
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
@@ -72,7 +71,7 @@ describe('POST /v1/fragments', () => {
     expect(res.statusCode).toBe(201);
   });
 
-  test('POSTing a fragment object with no data generates 415 error', async () => {
+  test('creating a fragment object with no data generates 415 error', async () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
@@ -85,13 +84,54 @@ describe('POST /v1/fragments', () => {
     expect(res.body).toStrictEqual(errorResponse);
   });
   
-  test('creating a fragment without specifying content-type generates 500 status code', async () => {
+  test('creating a fragment without specifying content-type generates 415 error', async () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
       .set("Content-Type", "\t")
       .send('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in euismod nisi. Vivamus in dui non magna molestie consequat. Proin placerat condimentum cursus. Cras vitae magna venenatis, dapibus velit vel, euismod ante. Maecenas eget lacus erat. Aliquam erat volutpat. Donec cursus nunc feugiat, maximus ipsum iaculis, dignissim lectus. Mauris ut ligula et nulla ullamcorper fermentum ut eu velit.');
-    logger.debug(`response: ${JSON.stringify(res.body)}`)
-    expect(res.statusCode).toBe(500);
+    expect(res.statusCode).toBe(415);
+  });
+
+  test('creating an application/json fragment', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set("Content-Type", "application/json; charset=utf-8")
+      .send({
+        name: "John",
+        age: 30,
+        car: null
+      });
+    
+    logger.debug(`res.body: ${JSON.stringify(res.body, null, 4)}`);
+    expect(res.statusCode).toBe(201);
+  });
+
+  test('creating different text fragments', async () => {
+    const textFragments = [
+      {name: "text/markdown", content: "##Hello World"},
+      {name: "text/markdown; charset=utf-8", content:"#Hello World!"},
+      {name: "text/html", content: "<h1>Hello World</h1>" },
+      {name: "text/html; charset=iso-8859-1", content: "<h3></h3>"}
+    ];
+
+    textFragments.forEach(async (fragment) => {
+      const res = await request(app)
+        .post('/v1/fragments')
+        .auth('user1@email.com', 'password1')
+        .set('Content-Type', fragment.name)
+        .send(fragment.content);      
+      expect(res.statusCode).toBe(201);
+    });
+  });
+
+  test('invalid parameter when specifying content-type throws error', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set("Content-Type", "text/plain; charset")
+      .send('Lorem ipsum...');
+    expect(res.statusCode).toBe(415);
   });
 });
