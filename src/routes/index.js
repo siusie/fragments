@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache');
 
   // Send a 200 'OK' response and some additional info
-  const data = { author, githubUrl: 'https://github.com/suscx/fragments', version };
+  const data = { author, githubUrl: 'https://github.com/siusie/fragments', version };
   
   res.status(200).json(createSuccessResponse(data));
 
