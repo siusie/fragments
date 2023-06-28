@@ -1,7 +1,7 @@
 # Stage 0: install the base dependencies
 
 # Install alpine Linux + node, being as specific as possible with version + the image's ID, as a SHA256 digest
-FROM node:18-alpine3.17@sha256:4a55308cc855cba1a925d19ae4e45838741dad2fd7bb8949a93b2a0f2ae339e3 AS dependencies
+FROM node:18 AS dependencies
 
 LABEL maintainer="Xi Chen <xchen339@myseneca.ca>"
 LABEL description="Fragments node.js microservice"
