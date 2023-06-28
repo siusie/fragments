@@ -1,13 +1,14 @@
 // Use crypto.randomUUID() to create unique IDs, see:
 // https://nodejs.org/api/crypto.html#cryptorandomuuidoptions
 const { randomUUID } = require('crypto');
+
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
 
-// https://www.npmjs.com/package/mime-types
-const mime = require('mime-types');
+// https://github.com/markdown-it/markdown-it
+var md = require('markdown-it')();
 
-// const logger = require('../logger');
+const logger = require('../logger');
 
 // Functions for working with fragment metadata/data using our DB
 const {
@@ -112,6 +113,26 @@ class Fragment {
    */
   getData() {
     return readFragmentData(this.ownerId, this.id);
+  }
+
+  /**
+   * Converts the fragment's data to another type
+   * @param {string} convertTo the content-type to convert to
+   * @returns Promise<String>
+   */
+  async convertData(convertTo) {
+    
+    // `convertTo` must be one of the supported types
+    // AND the current fragment's data type can be converted to it
+    if ((Fragment.isSupportedType(convertTo) && this.formats.includes(convertTo)) || !convertTo) {
+      const { type } = contentType.parse(this.type);
+      let data = await this.getData();
+      
+      // text/markdown -> text/html
+      return (type === 'text/markdown' && convertTo === 'text/html') ?  md.render(data.toString()) : data;
+      // + other types...
+    }
+    return '';  // return an empty string for unsupported types
   }
 
   /**
