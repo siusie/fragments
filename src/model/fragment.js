@@ -24,6 +24,7 @@ const validTypes = [
   'text/markdown',
   'text/html',
   'text/plain',
+  'application/json',
   'image/png',
   'image/jpeg',
   'image/webp',
@@ -32,28 +33,21 @@ const validTypes = [
 
 // Generate an ISO 8601 Date string
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-const isoDate = () => (new Date).toISOString()
+const isoDate = (date) => (date || new Date).toISOString()
 
 // ownerId and type are required
 class Fragment {
 
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     typeof id === 'string' ? this.id = id : this.id = randomUUID(id);
-
-    if (!ownerId) throw new Error(`ownerId is required`);
+    if (!ownerId) {
+      throw new Error(`ownerId is required`);
+    }
     this.ownerId = ownerId;    
 
     // Converting an invalid date will generate an error 
-    if (created) {
-      this.created = created.toISOString();
-    }
-    else if (updated) {
-      this.updated = updated.toISOString();
-    }
-    else {
-      this.created = isoDate();
-      this.updated = isoDate();
-    }
+      this.created = isoDate(created);
+      this.updated = isoDate(updated);
 
     // Validating content-type
     if (!Fragment.isSupportedType(type)) {
@@ -161,8 +155,19 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    const formats = ['text/plain',];
-    return formats;
+    const { type } = contentType.parse(this.type);
+    switch (type) {
+      case 'text/plain':
+        return ['text/plain'];
+      case 'text/markdown':
+        return ['text/markdown', 'text/html', 'text/plain'];
+      case 'text/html':
+        return ['text/html', 'text/plain'];
+      case 'application/json':
+        return ['application/json', 'text/plain'];
+      default:
+        return ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+    }
   }
 
   /**
@@ -171,18 +176,8 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    if ((/^text\/[a-z]/).test(value)) {
-      const { type } = contentType.parse(value);
-      // logger.debug(`passed here ${type}`)
-      return mime.contentType(value) && validTypes.includes(type);     
-    }
-    if ((/^application\/json;*/).test(value)) {
-      return mime.contentType(value);  
-    }
-    if ((/^image\/[a-z]/).test(value)) {
-      return validTypes.includes(value);      
-    }
-    return false;
+    const { type } = contentType.parse(value);
+    return validTypes.includes(type);
   }
 }
 
