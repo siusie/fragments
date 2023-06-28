@@ -8,7 +8,7 @@ const contentType = require('content-type');
 // https://github.com/markdown-it/markdown-it
 var md = require('markdown-it')();
 
-const logger = require('../logger');
+// const logger = require('../logger');
 
 // Functions for working with fragment metadata/data using our DB
 const {
