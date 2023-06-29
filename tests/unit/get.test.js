@@ -39,8 +39,7 @@ describe('GET /v1/fragments', () => {
     expect(Array.isArray(res.body.fragments)).toBe(true);
     expect(res.body.fragments.length).not.toBe(0);
     expect(typeof res.body.fragments[0]).not.toBe('object');
-  });
-  
+  });  
 });
 
 describe('GET /v1/fragments?expand=1', () => {
@@ -75,7 +74,7 @@ describe('GET /v1/fragments?expand=1', () => {
 });
 
 describe('GET /v1/fragments/:id', () => {
-  test('retrieve a fragment\'s data by its id', async () => {
+  test('a fragment\'s data can be retrieved using its ID', async () => {
     const fragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
     await fragment.setData(Buffer.from('This is a fragment'));
@@ -91,7 +90,7 @@ describe('GET /v1/fragments/:id', () => {
     expect(res.body.string).toBe(data.string);
   });
 
-  test('invalid id results in 404 error', async () => {
+  test('invalid fragment id results in 404 error', async () => {
     const fragment = new Fragment({ ownerId: 'user1@email.com', type: 'text/plain', size: 0 });
     await fragment.save();
     await fragment.setData(Buffer.from('This is a fragment'));
@@ -111,7 +110,7 @@ describe('GET /v1/fragments/:id', () => {
     expect(res.body).toStrictEqual(errorResponse);
   });
 
-  test('.txt extension returns the fragment\'s data', async () => {
+  test('.txt extension returns the fragment\'s data unchanged', async () => {
     const fragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
     await fragment.setData(Buffer.from('TEST FRAGMENT'));
@@ -132,10 +131,22 @@ describe('GET /v1/fragments/:id', () => {
     await fragment1.setData(Buffer.from('TEST FRAGMENT'));
 
     const res = await request(app)
-      .get(`/v1/fragments/${fragment1.id}.html`)
+      .get(`/v1/fragments/${fragment1.id}.mp4`)
       .auth('user1@email.com', 'password1');
     
-    const errorResponse = createErrorResponse(415, `Unable to convert to .html`);    
+    const errorResponse = createErrorResponse(415, `Unable to convert to .mp4`);    
+    logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
+    expect(res.statusCode).toBe(415);
+    expect(res.body).toStrictEqual(errorResponse);
+  });
+
+  test('unknown extension results in 415 error', async () => {
+    await fragment2.save();
+    await fragment2.setData(Buffer.from('Test fragment'));
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment1.id}.abc`)
+      .auth('user2@email.com', 'password2');
+    const errorResponse = createErrorResponse(415, `The extension .abc is invalid`);    
     logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
