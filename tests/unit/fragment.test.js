@@ -2,6 +2,10 @@
 
 const { Fragment } = require('../../src/model/fragment');
 
+const logger = require('../../src/logger');
+const contentType = require('content-type');
+const mime = require('mime-types');
+
 // Wait for a certain number of ms. Feel free to change this value
 // if it isn't long enough for your test runs. Returns a Promise.
 const wait = async (ms = 10) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -263,4 +267,16 @@ describe('Fragment class', () => {
       expect(() => Fragment.byId('1234', fragment.id)).rejects.toThrow();
     });
   });
+
+  describe('conversions', () => {
+    test('text/markdown -> text/html', async () => { 
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/markdown; charset=utf-8', size: 0 });
+      fragment.setData(Buffer.from('# Hello World!'));
+      const { type } = contentType.parse(mime.lookup('.html'));
+      const convertedData = await fragment.convertData(type);
+      logger.debug(`convert to: ${type}, result: ${convertedData}`);
+      expect(typeof convertedData).toBe('string');
+    });
+  });
+  
 });
