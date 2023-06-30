@@ -124,7 +124,7 @@ class Fragment {
     
     // `convertTo` must be one of the supported types
     // AND the current fragment's data type can be converted to it
-    if ((Fragment.isSupportedType(convertTo) && this.formats.includes(convertTo)) || !convertTo) {
+    if (Fragment.isSupportedType(convertTo) && this.formats.includes(convertTo)) {
       const { type } = contentType.parse(this.type);
       let data = await this.getData();
       
