@@ -91,9 +91,8 @@ describe('GET /v1/fragments/:id', () => {
   });
 
   test('invalid fragment id results in 404 error', async () => {
-    const fragment = new Fragment({ ownerId: 'user1@email.com', type: 'text/plain', size: 0 });
+    const fragment = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
-    await fragment.setData(Buffer.from('This is a fragment'));
 
     let errorResponse;
     try {
@@ -103,7 +102,7 @@ describe('GET /v1/fragments/:id', () => {
     }
 
     const res = await request(app)
-      .get(`/v1/fragments/invalid-id`)
+      .get(`/v1/fragments/quux`)
       .auth('user1@email.com', 'password1');    
 
     expect(res.statusCode).toBe(404);
@@ -118,12 +117,10 @@ describe('GET /v1/fragments/:id', () => {
     const res = await request(app)
       .get(`/v1/fragments/${fragment.id}.txt`)
       .auth('user2@email.com', 'password2');
-    
-    const data = await fragment.getData();    
-    // logger.debug(`fragment id included in URL: ${fragment.id}`);
-    logger.debug(`got back: ${(data)}`);
+
+    logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body.string).toBe(data.string);
+    expect(res.text).toBe('TEST FRAGMENT');
   });
 
   test('unsupported extension results in 415 error', async () => {
@@ -151,6 +148,36 @@ describe('GET /v1/fragments/:id', () => {
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
   });
+
+  test('converting text/markdown to text/html', async () => { 
+    const fragment = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/markdown', size: 0 });
+    await fragment.save();
+    await fragment.setData(Buffer.from('## Test fragment'));
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment.id}.html`)
+      .auth('user1@email.com', 'password1');
+    
+    const data = await fragment.convertData('text/html');
+    logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.text).toBe(data);
+  });
+
+  test('converting text/markdown to text/plain', async () => {
+  const fragment = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/markdown', size: 0 });
+    await fragment.save();
+    await fragment.setData(Buffer.from('# Test fragment'));
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment.id}.txt`)
+      .auth('user1@email.com', 'password1');
+    
+    const data = await fragment.convertData('text/plain');
+    logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.text).toBe(data.toString());
+});
 });
 
 describe('GET /fragments/:id/info', () => {
