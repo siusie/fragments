@@ -10,7 +10,7 @@ const router = express.Router();
 
 const contentType = require('content-type');
 
-const { Fragment} = require('../../model/fragment');
+const { Fragment } = require('../../model/fragment');
 
 const logger = require('../../logger');
 
