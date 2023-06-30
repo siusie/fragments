@@ -5,11 +5,10 @@ const logger = require('../../logger');
 const { Fragment } = require('../../model/fragment');
 
 /**
- * Get a list of fragments belonging to the current user
+ * Get a list of fragments belonging to the current user.
+ * Can be an array of fragment IDs, an array of fragment metadata, or error
  */
 module.exports = async (req, res) => {
-
-  // No ID in URL: return an array of fragment IDs, an array of fragment metadata, or error
   try {
     let data;
 
