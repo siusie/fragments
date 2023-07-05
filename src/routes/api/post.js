@@ -29,6 +29,7 @@ module.exports = async (req, res) => {
 
     res
       .setHeader('Location', `${req.protocol}://${process.env.API_URL}/v1/fragments/${fragment.id}`)
+      .setHeader('Access-Control-Expose-Headers', 'Location')
       .status(201)
       .json(createSuccessResponse({fragment}));  
   }
