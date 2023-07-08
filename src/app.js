@@ -54,9 +54,10 @@ app.use(
     xFrameOptions: false,
     xPermittedCrossDomainPolicies: false,
     xXssProtection: false,
-    accessControlAllowOrigin: false,
   })
 );
+
+app.disable('etag');
 
 // Use CORS middleware so we can make requests across origins
 app.use(cors());
