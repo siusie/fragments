@@ -3,7 +3,6 @@
 # Install alpine Linux + node, being as specific as possible with version + the image's ID, as a SHA256 digest
 FROM node:18 AS dependencies
 
-LABEL maintainer="Xi Chen <xchen339@myseneca.ca>"
 LABEL description="Fragments node.js microservice"
 
 # Reduce npm spam when installing within Docker
@@ -20,7 +19,7 @@ WORKDIR /app
 # Copy files into image, change the owner to node user, node group
 COPY --chown=node:node package*.json .
 
-# Reads only package-lock.json, install exact versions specified there, ignore any devDependencies (ex., Jest)
+# Read only package-lock.json, install exact versions specified there, ignore any devDependencies (ex., Jest)
 RUN npm ci --only=production
 
 #####################################################################
