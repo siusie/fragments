@@ -2,7 +2,7 @@
 
 const { Fragment } = require('../../src/model/fragment');
 
-const logger = require('../../src/logger');
+// const logger = require('../../src/logger');
 const contentType = require('content-type');
 const mime = require('mime-types');
 
@@ -130,7 +130,7 @@ describe('Fragment class', () => {
       expect(Fragment.isSupportedType('text/plain; charset=utf-8')).toBe(true);
       expect(Fragment.isSupportedType('text/markdown')).toBe(true);
       expect(Fragment.isSupportedType('text/markdown; charset=utf-8')).toBe(true);
-      expect(Fragment.isSupportedType('text/html; charset=utf-8')).toBe(true);
+      expect(Fragment.isSupportedType('text/html;charset=ISO-8859-1')).toBe(true);
       expect(Fragment.isSupportedType('text/html')).toBe(true);
       expect(Fragment.isSupportedType('application/json')).toBe(true);
       expect(Fragment.isSupportedType('application/json; charset=utf-8')).toBe(true);
@@ -184,7 +184,6 @@ describe('Fragment class', () => {
   });
 
   describe('save(), getData(), setData(), byId(), byUser(), delete()', () => {
-
     test('byUser() returns an empty array if there are no fragments for this user', async () => {
       expect(await Fragment.byUser('1234')).toEqual([]);
     });
@@ -274,7 +273,6 @@ describe('Fragment class', () => {
       fragment.setData(Buffer.from('# Hello World!'));
       const { type } = contentType.parse(mime.lookup('.html'));
       const convertedData = await fragment.convertData(type);
-      logger.debug(`convert to: ${type}, result: ${convertedData}`);
       expect(typeof convertedData).toBe('string');
     });
   });

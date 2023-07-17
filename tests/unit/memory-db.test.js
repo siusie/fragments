@@ -22,7 +22,6 @@ describe('memory-db', () => {
     expect(result).toEqual(data);
   });
 
-  // see: node.js Buffer
   test('put() and get() work with Buffers', async () => {
     const data = Buffer.from([1, 2, 3]);
     await db.put('a', 'b', data);

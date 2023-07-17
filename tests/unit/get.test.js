@@ -11,7 +11,6 @@ const fragment1 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/p
 const fragment2 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain', size: 0 });
 
 describe('GET /v1/fragments', () => {
-
   // If the request is missing the Authorization header, it should be forbidden
   test('unauthenticated requests are denied', () => request(app).get('/v1/fragments').expect(401));
 
@@ -73,7 +72,7 @@ describe('GET /v1/fragments?expand=1', () => {
    });
 });
 
-describe('GET /v1/fragments/:id', () => {
+describe('GET /v1/fragments/:id, GET /v1/fragments/:id.ext', () => {
   test('a fragment\'s data can be retrieved using its ID', async () => {
     const fragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'text/plain', size: 0 });
     await fragment.save();
@@ -161,6 +160,7 @@ describe('GET /v1/fragments/:id', () => {
     const data = await fragment.convertData('text/html');
     logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);
     expect(res.statusCode).toBe(200);
+    expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.text).toBe(data);
   });
 
@@ -176,8 +176,9 @@ describe('GET /v1/fragments/:id', () => {
     const data = await fragment.convertData('text/plain');
     logger.debug(`got back: ${JSON.stringify(res, null, 4)}`);
     expect(res.statusCode).toBe(200);
+    expect(res.header['content-type']).toBe('text/plain');
     expect(res.text).toBe(data.toString());
-});
+  });
 });
 
 describe('GET /fragments/:id/info', () => {
