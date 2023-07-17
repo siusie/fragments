@@ -47,8 +47,8 @@ class Fragment {
     this.ownerId = ownerId;    
 
     // Converting an invalid date will generate an error 
-      this.created = isoDate(created);
-      this.updated = isoDate(updated);
+    this.created = isoDate(created);
+    this.updated = isoDate(updated);
 
     // Validating content-type
     if (!Fragment.isSupportedType(type)) {
