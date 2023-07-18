@@ -60,6 +60,16 @@ describe('POST /v1/fragments', () => {
     expect(res.body).toStrictEqual(errorResponse);
   });
 
+  test('a fragment cannot contain invalid data (only white-spaces, newlines, etc)', async () => { 
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-Type', 'text/plain')
+      .send(Buffer.from(' '));   
+    
+    expect(res.statusCode).toBe(403);
+  });
+
   test('success response contains fragment data', async () => {
     const res = await request(app)
       .post('/v1/fragments')
