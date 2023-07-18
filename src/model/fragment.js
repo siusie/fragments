@@ -102,9 +102,8 @@ class Fragment {
    * @returns Promise<void>
    */
   async save() {
-    await writeFragment(this);
     this.updated = isoDate();
-    return Promise.resolve();   
+    return writeFragment(this);   
   }
 
   /**
@@ -146,11 +145,9 @@ class Fragment {
         `data must be a Buffer`
       );
     }
-
-    let promise = writeFragmentData(this.ownerId, this.id, data);
     this.size = Buffer.byteLength(data);
     this.updated = isoDate();
-    return promise;
+    return writeFragmentData(this.ownerId, this.id, data);
   }
 
   /**
