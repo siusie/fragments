@@ -7,12 +7,17 @@ const contentType = require('content-type');
 
 module.exports = async (req, res) => {
   
-  // generate an error response if:
+  // Generate an error response if:
   // content type is invalid (req.body is not a buffer),
   // file is empty (buffer bytes = 0)
-  if (!Buffer.isBuffer(req.body) || Buffer.byteLength(req.body) === 0) { 
+  if (!Buffer.isBuffer(req.body) || !Buffer.byteLength(req.body)) { 
     return res.status(415).json(createErrorResponse(415, 'content-type is not supported'));
-  } 
+  }
+
+  // Empty fragments are not allowed 
+  if (!req.body.toString().replace(/\s/g, '').length) {
+    return res.status(403).json(createErrorResponse(403, 'fragment data cannot be empty'));
+  }
 
   // getting the content type (specified by the client)
   const { type } = contentType.parse(req);
