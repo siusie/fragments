@@ -17,10 +17,11 @@ ENV NPM_CONFIG_COLOR=false
 WORKDIR /app
 
 # Copy files into image, change the owner to node user, node group
-COPY --chown=node:node package*.json .
+COPY --chown=node:node package*.json . \
+    ./tests/.htpasswd .
 
 # Read only package-lock.json, install exact versions specified there, ignore any devDependencies (ex., Jest)
-RUN npm ci --only=production
+RUN npm ci
 
 #####################################################################
 
