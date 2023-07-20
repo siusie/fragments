@@ -18,10 +18,10 @@ WORKDIR /app
 
 # Copy files into image, change the owner to node user, node group
 COPY --chown=node:node package*.json . \
-    ./tests/.htpasswd .
+    ./tests/.htpasswd ./
 
 # Read only package-lock.json, install exact versions specified there, ignore any devDependencies (ex., Jest)
-RUN npm ci
+RUN npm ci --only=production
 
 #####################################################################
 
