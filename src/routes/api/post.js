@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
 
   // getting the content type (specified by the client)
   const type = contentType.parse(req);
-  logger.debug(`[post.js] parsed type: ${ type }`);
+  logger.debug(`[post.js] parsed type: ${ JSON.stringify(type, null, 4) }`);
 
   
   // Create a new fragment object, making sure to include any character sets included with content-type
@@ -31,10 +31,9 @@ module.exports = async (req, res) => {
   try {
     await fragment.save();
     await fragment.setData(req.body);
-    logger.debug(`SAVED DATA SUCCESSFULLY`);
 
     res
-      .setHeader('Location', `${req.protocol}://${process.env.API_URL}/v1/fragments/${fragment.id}`)
+      .setHeader('Location', `${req.protocol + `://` + (process.env.API_URL == 'localhost:8080' ? process.env.API_URL : req.headers.host)}/v1/fragments/${fragment.id}`)
       .setHeader('Access-Control-Expose-Headers', 'Location')
       .status(201)
       .json(createSuccessResponse({fragment}));  
