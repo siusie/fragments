@@ -3,7 +3,7 @@
 services:
   # Fragments microservice API server
   fragments:
-    # Same as `docker run --env-file .env ...`
+    # Same as `docker run --env-file env.jest ...`
     env_file: env.jest
     # Use a proper init process (tini)
     init: true
