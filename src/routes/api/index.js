@@ -4,14 +4,9 @@
  * The main entry-point for the v1 version of the fragments API.
  */
 const express = require('express');
-
-// Create a router on which to mount our API endpoints
-const router = express.Router();
-
+const router = express.Router();  // Create a router on which to mount our API endpoints
 const contentType = require('content-type');
-
 const { Fragment } = require('../../model/fragment');
-
 const logger = require('../../logger');
 
 // Support sending various Content-Types on the body up to 5M in size
@@ -47,5 +42,8 @@ router.get('/fragments/:id/info', require('./get-metadata'));
 
 // POST /fragments
 router.post('/fragments', rawBody(), require('./post'));
+
+// DELETE /fragments/:id
+router.delete('/fragments/:id', require('./delete'));
 
 module.exports = router;

@@ -6,7 +6,6 @@ const { Fragment } = require('../../model/fragment');
 const contentType = require('content-type');
 
 module.exports = async (req, res) => {
-  
   // Generate an error response if:
   // content type is invalid (req.body is not a buffer),
   // file is empty (buffer bytes = 0)
@@ -39,6 +38,7 @@ module.exports = async (req, res) => {
       .json(createSuccessResponse({fragment}));  
   }
   catch (err) {
-      logger.error(`Error saving fragment - ${err}`);    
+    logger.error(err);    
+    throw new Error('Error saving fragment');
   }
 };

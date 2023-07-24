@@ -8,6 +8,7 @@ const mime = require('mime-types');
 /**
 * GET /v1/fragments/:id
 * GET /v1/fragments/:id.ext
+* Given a fragment ID, retrieve its contents (data)
 */
 
 module.exports = async (req, res) => { 
