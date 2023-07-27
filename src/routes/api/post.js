@@ -20,11 +20,11 @@ module.exports = async (req, res) => {
 
   // getting the content type (specified by the client)
   const type = contentType.parse(req);
-  logger.debug(`[post.js] parsed type: ${ JSON.stringify(type, null, 4) }`);
+  // logger.debug(`[post.js] parsed type: ${ JSON.stringify(type, null, 4) }}`);
 
   
-  // Create a new fragment object, making sure to include any character sets included with content-type
-  let fragment = new Fragment({ ownerId: req.user, type: type.parameters.charset ? type.type + '; charset=' +  type.parameters.charset : type.type });
+  // Create a new fragment object, making sure to include the character set as well (if it was specified during creation)
+  let fragment = new Fragment({ ownerId: req.user, size: Buffer.byteLength(req.body), type: type.parameters.charset ? type.type + '; charset=' + type.parameters.charset : type.type });
 
   // Attempt to save fragment to the db
   try {
