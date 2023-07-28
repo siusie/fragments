@@ -84,6 +84,20 @@ class Fragment {
     if (!(await readFragment((ownerId), id))) {
       throw new Error(`fragment does not exist for this user`);
     }
+    if (!(fragment instanceof Fragment)) {
+      // Convert to a Fragment object first if retrieving fragment data & metadata from the DB
+      // otherwise, we can't use its methods
+      let fragment2 = new Fragment({
+        ownerId: fragment.ownerId,
+        id: fragment.id,
+        type: fragment.type,
+        size: fragment.size
+      });
+      // Set these two properties separately since their values are already date strings
+      fragment2.created = fragment.created;       
+      fragment2.updated = fragment.updated;
+      return fragment2;
+    }
     return fragment;
   }
 
@@ -120,7 +134,6 @@ class Fragment {
    * @returns Promise<String>
    */
   async convertData(convertTo) {
-    
     // `convertTo` must be one of the supported types
     // AND the current fragment's data type can be converted to it
     if (Fragment.isSupportedType(convertTo) && this.formats.includes(convertTo)) {
