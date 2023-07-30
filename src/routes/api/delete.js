@@ -14,5 +14,6 @@ module.exports = async (req, res) => {
     return res.status(200).json(createSuccessResponse());
   } catch (err) {
     logger.error(err);
-    return res.status(404).json(createErrorResponse(404, err.message));  }
+    return res.status(404).json(createErrorResponse(404, err.message));
+  }
 };
