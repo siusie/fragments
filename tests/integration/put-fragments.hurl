@@ -24,7 +24,7 @@ Content-Type: text/markdown
 [BasicAuth]
 user2@email.com:password2
 
-`Hello **world**!.`
+`Hello **world**!`
 
 HTTP/1.1 200
 [Asserts]
@@ -32,7 +32,7 @@ jsonpath "$.status" == "ok"
 jsonpath "$.fragment.id" == {{fragment_id}}
 jsonpath "$.fragment.ownerId" matches "^[0-9a-fA-F]+$"
 jsonpath "$.fragment.type" == "text/markdown"
-jsonpath "$.fragment.size" == 17
+jsonpath "$.fragment.size" == 16
 jsonpath "$.fragment.formats" count == 3
 
 ####################################################################
@@ -45,6 +45,6 @@ user2@email.com:password2
 
 HTTP/1.1 200
 Content-Type: text/markdown
-Content-Length: 17
+Content-Length: 16
 [Asserts]
-body == "Hello **world**!."
+body == "Hello **world**!"
