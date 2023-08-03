@@ -57,3 +57,6 @@ src/
 ...
 ```
 `src/auth/index.js` chooses the authentication strategy - Cognito or Basic Authentication
+
+## Deploying to AWS
+Every time we deploy a new release to ECS, we have to update our GitHub repo's secrets!
