@@ -102,7 +102,7 @@ async function deleteFragment(ownerId, id) {
 
   // Create a DELETE command to send to S3
   const command = new DeleteObjectCommand(params);
-  // Create a DELETE command to send to S3
+  // Create a DELETE command to send to DynamoDB
   const commandDynamo = new DeleteCommand(paramsDynamo);
 
   try {
