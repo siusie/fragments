@@ -1,5 +1,5 @@
 # tests/integration/put-fragments-different-type.hurl
-# Testing the error generated if attempting to update fragment type
+# Testing the error generated when attempting to update fragment type
 
 POST http://localhost:8080/v1/fragments
 Content-Type: text/html
