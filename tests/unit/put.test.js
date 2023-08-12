@@ -7,7 +7,7 @@ const hash = require('../../src/hash');
 
 const fragment1 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain', size: 0 });
 
-describe('PUT /v1/fragments', () => { 
+describe('PUT /v1/fragments/:id', () => { 
   test('a fragment\'s data can be modified', async () => {    
     await fragment1.save();
     await fragment1.setData(Buffer.from('This is a fragment'));
@@ -35,5 +35,18 @@ describe('PUT /v1/fragments', () => {
       .send(Buffer.from('## This fragment has been modified'));    
   
     expect(res.statusCode).toBe(400);
+  });
+
+  test('unknown id generates 404 error', async () => { 
+    await fragment1.save();
+    await fragment1.setData(Buffer.from('Hello'));
+
+    const res = await request(app)
+      .put(`/v1/fragments/123`)
+      .auth('user1@email.com', 'password1')
+      .set('Content-Type', fragment1.type)
+      .send(Buffer.from('This fragment has been modified'));
+  
+    expect(res.statusCode).toBe(404);
   });
 });
