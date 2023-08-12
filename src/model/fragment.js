@@ -6,7 +6,10 @@ const { randomUUID } = require('crypto');
 const contentType = require('content-type');
 
 // https://github.com/markdown-it/markdown-it
-var md = require('markdown-it')();
+const md = require('markdown-it')();
+
+// For image manipulation; see https://sharp.pixelplumbing.com/
+const sharp = require('sharp');
 
 // const logger = require('../logger');
 
@@ -131,20 +134,27 @@ class Fragment {
   /**
    * Converts the fragment's data to another type
    * @param {string} convertTo the content-type to convert to
-   * @returns Promise<String>
+   * @returns Promise<Buffer>
    */
   async convertData(convertTo) {
+    // To convert the fragment's data,
     // `convertTo` must be one of the supported types
     // AND the current fragment's data type can be converted to it
     if (Fragment.isSupportedType(convertTo) && this.formats.includes(convertTo)) {
+
       const { type } = contentType.parse(this.type);
-      let data = await this.getData();
+      const data = await this.getData();
       
-      // text/markdown -> text/html
-      return (type === 'text/markdown' && convertTo === 'text/html') ?  md.render(data.toString()) : data;
-      // + other types...
+      if (type === 'text/markdown' && convertTo === 'text/html') {
+        return md.render(data.toString());
+      }      
+      else if (type !== convertTo && type.includes('image/')) {
+        return sharp(data).toFormat(convertTo.split('/')[1]).toBuffer();          
+      }
+      // An extension can be the fragment's current type OR the extension is .txt --> return the unmodified data
+      // Converting to plain text does not require further modification
+      return data;
     }
-    return '';  // return an empty string for unsupported types
   }
 
   /**
@@ -158,9 +168,17 @@ class Fragment {
         `data must be a Buffer`
       );
     }
-    this.size = Buffer.byteLength(data);
     this.updated = isoDate();
-    return writeFragmentData(this.ownerId, this.id, data);
+
+    // If the type is a JPEG image, compress it.
+    // Compression reduces file size without compromising image quality.
+    if (this.type.includes('image/jpeg')) {
+      const dataCompressed = await sharp(data).jpeg({ mozjpeg: true }).toBuffer();
+      this.size = Buffer.byteLength(dataCompressed);
+      return writeFragmentData(this.ownerId, this.id, dataCompressed);
+    }
+    this.size = Buffer.byteLength(data);
+    return writeFragmentData(this.ownerId, this.id, data);   
   }
 
   /**
