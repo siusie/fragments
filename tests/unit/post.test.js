@@ -54,7 +54,7 @@ describe('POST /v1/fragments', () => {
       .set('Content-Type', 'video/ogg')
       .send(Buffer.from('TEST FRAGMENT'));   
     
-    const errorResponse = createErrorResponse(415, 'content-type is not supported');
+    const errorResponse = createErrorResponse(415, 'fragment type is not supported');
     logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
@@ -67,7 +67,7 @@ describe('POST /v1/fragments', () => {
       .set('Content-Type', 'text/plain')
       .send(Buffer.from(' '));   
     
-    expect(res.statusCode).toBe(403);
+    expect(res.statusCode).toBe(400);
   });
 
   test('success response contains fragment data', async () => {
@@ -81,16 +81,15 @@ describe('POST /v1/fragments', () => {
     expect(res.statusCode).toBe(201);
   });
 
-  test('creating a fragment object with no data generates 415 error', async () => {
+  test('creating a fragment object with no data generates 400 error', async () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
       .set('Content-Type', 'text/plain')
       .send("");
     
-    const errorResponse = createErrorResponse(415, 'content-type is not supported');
-    // logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
-    expect(res.statusCode).toBe(415);
+    const errorResponse = createErrorResponse(400, 'fragment data cannot be empty');
+    expect(res.statusCode).toBe(400);
     expect(res.body).toStrictEqual(errorResponse);
   });
   
