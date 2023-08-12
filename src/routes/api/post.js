@@ -20,15 +20,14 @@ module.exports = async (req, res) => {
 
     // getting the content type (specified by the client)
     const type = contentType.parse(req);
-    // logger.debug(`[post.js] parsed type: ${ JSON.stringify(type, null, 4) }}`);
+    logger.debug(`[post.js] parsed type: ${ JSON.stringify(type, null, 4) }}`);
 
-    
     // Create a new fragment object, making sure to include the character set as well (if it was specified during creation)
     let fragment = new Fragment({ ownerId: req.user, size: Buffer.byteLength(req.body), type: type.parameters.charset ? type.type + '; charset=' + type.parameters.charset : type.type });
 
     // Attempt to save fragment to the db  
-    await fragment.save();
     await fragment.setData(req.body);
+    await fragment.save();
 
     res
       .setHeader('Location', `${req.protocol + `://` + (process.env.API_URL == 'localhost:8080' ? process.env.API_URL : req.headers.host)}/v1/fragments/${fragment.id}`)
@@ -38,6 +37,6 @@ module.exports = async (req, res) => {
   }
   catch (err) {
     logger.error(err);    
-    throw new Error('Error saving fragment');
+    throw new Error('Error saving fragment. ', err);
   }
 };
