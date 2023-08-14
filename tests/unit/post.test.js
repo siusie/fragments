@@ -3,7 +3,6 @@
 const request = require('supertest');
 const app = require('../../src/app');
 const { createErrorResponse } = require('../../src/response');
-const logger = require('../../src/logger');
 
 describe('POST /v1/fragments', () => {
   //  If the request is missing the Authorization header, it should be forbidden
@@ -43,8 +42,6 @@ describe('POST /v1/fragments', () => {
     
     expect(res.statusCode).toBe(201);
     expect(res.headers.location).toMatch(/\/v1\/fragments\/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}/);
-
-    logger.debug(`[JEST] response location header: ${res.headers.location}`);
   });
 
   test('unsupported fragment type generates 415 error', async () => { 
@@ -54,8 +51,7 @@ describe('POST /v1/fragments', () => {
       .set('Content-Type', 'video/ogg')
       .send(Buffer.from('TEST FRAGMENT'));   
     
-    const errorResponse = createErrorResponse(415, 'fragment type is not supported');
-    logger.debug(`got back: ${JSON.stringify(res.body, null, 4)}`);    
+    const errorResponse = createErrorResponse(415, 'fragment type is not supported');   
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
   });
@@ -76,8 +72,7 @@ describe('POST /v1/fragments', () => {
       .auth('user1@email.com', 'password1')
       .set('Content-Type', 'text/plain')
       .send(('This is a fragment'));
-  
-    logger.debug(`got back: ${JSON.stringify(res, null, 4)}`); 
+    
     expect(res.statusCode).toBe(201);
   });
 
@@ -113,7 +108,6 @@ describe('POST /v1/fragments', () => {
         car: null
       });
     
-    logger.debug(`res.body: ${JSON.stringify(res.body, null, 4)}`);
     expect(res.statusCode).toBe(201);
   });
 

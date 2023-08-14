@@ -1,5 +1,5 @@
 // tests/unit/get.test.js
-
+const { readFileSync } = require('node:fs');
 const request = require('supertest');
 const app = require('../../src/app');
 const logger = require('../../src/logger');
@@ -48,7 +48,6 @@ describe('GET /v1/fragments?expand=1', () => {
     await fragment2.save();
     await fragment2.setData(Buffer.from('fjslkfjalsdjflkajsdlfdsfdsdsafdsafsdfdsafdsaads'));
     const fragment3 = new Fragment({ ownerId: hash('user1@email.com'), type: 'text/plain; charset=utf-8', size: 0 });
-    // fragment3.save();  // TODO: fix save() and setData() -- 2 instances of fragment3 created
     await fragment3.setData(Buffer.from('hello'));
 
     const res = await request(app).get('/v1/fragments?expand=1').auth('user1@email.com', 'password1');
@@ -178,6 +177,193 @@ describe('GET /v1/fragments/:id, GET /v1/fragments/:id.ext', () => {
     expect(res.statusCode).toBe(200);
     expect(res.header['content-type']).toBe('text/plain');
     expect(res.text).toBe(data.toString());
+  });
+});
+
+describe('Image fragments', () => {
+  test('GIF', async () => {
+    const gifFragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'image/gif' });
+    await gifFragment.save();
+    await gifFragment.setData(readFileSync('./tests/images/test.gif', (err) => {
+      if (err) logger.error(`Failed to read file. ${err}`);      
+    }));
+    
+    // GET /fragments/:id
+    let res = await request(app)
+      .get(`/v1/fragments/${gifFragment.id}`)
+      .auth('user2@email.com', 'password2');
+
+    expect(res.statusCode).toBe(200);
+
+    // Check that the response body contains a data URL
+    expect(Object.keys(res.body)).toEqual(['status', 'dataURL']); 
+    expect(res.body.dataURL.length).not.toBe(0);    
+
+    // GET /fragments/:id/info
+    res = await request(app)
+      .get(`/v1/fragments/${gifFragment.id}/info`)
+      .auth('user2@email.com', 'password2');
+    
+    const successResponse = createSuccessResponse({fragment: gifFragment});        
+    expect(res.statusCode).toBe(200);    
+    expect(res.body).toEqual(successResponse);
+  
+    // GET /fragments/:id.ext
+    // Convert GIF -> WebP
+    res = await request(app)
+      .get(`/v1/fragments/${gifFragment.id}.webp`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(200);
+
+    // The data URL should contain the type that the image has been converted to
+    expect(res.body.dataURL.length).not.toBe(0);
+    expect(res.body.dataURL).toEqual(expect.stringContaining('data:image/webp')); 
+
+    // GET /fragments/:id.ext
+    // Unsupported extension
+    res = await request(app)
+      .get(`/v1/fragments/${gifFragment.id}.txt`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(415);
+  });
+
+  test('WebP', async () => {
+    const webpFragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'image/webp' });
+    await webpFragment.save();
+    await webpFragment.setData(readFileSync('./tests/images/test.webp', (err) => {
+      if (err) logger.error(`Failed to read file. ${err}`);
+    }));    
+    
+    // GET /fragments/:id
+    let res = await request(app)
+      .get(`/v1/fragments/${webpFragment.id}`)
+      .auth('user2@email.com', 'password2');
+      
+    expect(res.statusCode).toBe(200);
+    expect(Object.keys(res.body)).toEqual(['status', 'dataURL']);
+    expect(res.body.dataURL.length).not.toBe(0);
+
+    // GET /fragments/:id/info
+    res = await request(app)
+      .get(`/v1/fragments/${webpFragment.id}/info`)
+      .auth('user2@email.com', 'password2');
+    
+    const successResponse = createSuccessResponse({fragment: webpFragment});        
+    expect(res.statusCode).toBe(200);    
+    expect(res.body).toEqual(successResponse);
+  
+    // GET /fragments/:id.ext
+    // Convert WebP -> PNG
+    res = await request(app)
+      .get(`/v1/fragments/${webpFragment.id}.png`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(200);
+
+    // The data URL should contain the type that the image has been converted to
+    expect(res.body.dataURL.length).not.toBe(0);
+    expect(res.body.dataURL).toEqual(expect.stringContaining('data:image/png')); 
+
+    // GET /fragments/:id.ext
+    // Unsupported extension
+    res = await request(app)
+      .get(`/v1/fragments/${webpFragment.id}.html`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(415);
+  });
+
+  test('PNG', async () => {
+    const pngFragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'image/png' });
+    await pngFragment.save();
+    await pngFragment.setData(readFileSync('./tests/images/test.png', (err) => {
+      if (err) logger.error(`Failed to read file. ${err}`);
+    }));
+    
+    // GET /fragments/:id
+    let res = await request(app)
+      .get(`/v1/fragments/${pngFragment.id}`)
+      .auth('user2@email.com', 'password2');
+      
+    expect(res.statusCode).toBe(200);
+    expect(Object.keys(res.body)).toEqual(['status', 'dataURL']);
+    expect(res.body.dataURL.length).not.toBe(0);
+
+    // GET /fragments/:id/info
+    res = await request(app)
+      .get(`/v1/fragments/${pngFragment.id}/info`)
+      .auth('user2@email.com', 'password2');
+    
+    const successResponse = createSuccessResponse({fragment: pngFragment});        
+    expect(res.statusCode).toBe(200);    
+    expect(res.body).toEqual(successResponse);
+  
+    // GET /fragments/:id.ext
+    // Convert PNG -> JPEG
+    res = await request(app)
+      .get(`/v1/fragments/${pngFragment.id}.jpg`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(200);
+
+    // The data URL should contain the type that the image has been converted to
+    expect(res.body.dataURL.length).not.toBe(0);
+    expect(res.body.dataURL).toEqual(expect.stringContaining('data:image/jpeg')); 
+
+    // GET /fragments/:id.ext
+    // Unsupported extension
+    res = await request(app)
+      .get(`/v1/fragments/${pngFragment.id}.md`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(415);
+  });
+
+  test('JPEG', async () => {
+    const jpegFragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'image/jpeg' });
+    await jpegFragment.save();
+    await jpegFragment.setData(readFileSync('./tests/images/test.jpg', (err) => {
+      if (err) logger.error(`Failed to read file. ${err}`);
+    }));
+    
+    let res = await request(app)
+      .get(`/v1/fragments/${jpegFragment.id}`)
+      .auth('user2@email.com', 'password2');
+      
+    expect(res.statusCode).toBe(200);
+    expect(Object.keys(res.body)).toEqual(['status', 'dataURL']);
+    expect(res.body.dataURL.length).not.toBe(0);
+  
+    // GET /fragments/:id/info
+    res = await request(app)
+      .get(`/v1/fragments/${jpegFragment.id}/info`)
+      .auth('user2@email.com', 'password2');
+    
+    const successResponse = createSuccessResponse({fragment: jpegFragment});        
+    expect(res.statusCode).toBe(200);    
+    expect(res.body).toEqual(successResponse);
+  
+    // GET /fragments/:id.ext
+    // Convert JPEG -> GIF
+    res = await request(app)
+      .get(`/v1/fragments/${jpegFragment.id}.gif`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(200);
+
+    // The data URL should contain the type that the image has been converted to
+    expect(res.body.dataURL.length).not.toBe(0);
+    expect(res.body.dataURL).toEqual(expect.stringContaining('data:image/gif')); 
+
+    // GET /fragments/:id.ext
+    // Unsupported extension
+    res = await request(app)
+      .get(`/v1/fragments/${jpegFragment.id}.json`)
+      .auth('user2@email.com', 'password2');
+    
+    expect(res.statusCode).toBe(415);
   });
 });
 
