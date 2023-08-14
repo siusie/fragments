@@ -13,15 +13,15 @@ module.exports = async (req, res) => {
   try {
     // Generate an error response if
     // Content-Type is invalid (req.body is not a buffer)
-    if (!Buffer.isBuffer(req.body)) { 
-      return res.status(415).json(createErrorResponse(415, 'Content-Type is not supported'));
+    if (!Buffer.isBuffer(req.body)) {
+      return res.status(415).json(createErrorResponse(415, 'invalid_content_type'));
     }
-    
+
     // Empty fragments are not allowed
-    if (!req.body.toString().replace(/\s/g, '').length || !Buffer.byteLength(req.body)) {
-      return res.status(400).json(createErrorResponse(400, 'fragment data cannot be empty'));
+    if (!req.body.toString().replace(/\s/g, '').length) {
+     return !Buffer.isBuffer(req.body) ?  res.status(400).json(createErrorResponse(400, 'A fragment\'s type cannot be changed!')) : res.status(400).json(createErrorResponse(400, 'fragment data cannot be empty'));
     }
-    
+
     // Attempt to retrieve the fragment
     let fragment = await Fragment.byId(req.user, req.params.id);
 
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
       return res.status(400).json(createErrorResponse(400, 'A fragment\'s type cannot be changed!'));
     }
 
-    // At this point, the fragment exists and the data & Content-Type in the request are valid 
+    // At this point, the fragment exists and the data + Content-Type in the request are valid 
     await fragment.save();
     await fragment.setData(req.body);
 
