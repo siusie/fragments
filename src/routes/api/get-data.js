@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
  
   const extension = path.extname(req.params.id).toLowerCase();
   const type = mime.lookup(extension); // false if extension is invalid or nonexistent
-  logger.debug(`type from mime.lookup: ${type}`)
+  logger.debug(`got extension: ${extension ? extension : 'none'}, type from mime.lookup: ${type ? type : 'none'}`);
   
   // Return a 415 error response if there is an extension, but is unknown
   if (extension !== '' && !type) {
@@ -39,10 +39,10 @@ module.exports = async (req, res) => {
     let data = type ? await fragment.convertData(type) : await fragment.getData();
 
     // If the fragment type is an image, encode it as a Base64 string and include in the response obj
-    if (fragment.type.includes('image/')) {
+    if (fragment.type.includes('image/') && data) {
       var b64encoded = data.toString('base64');
       var dataURL = `data:${type ? type : fragment.type};base64,${b64encoded}`;
-      return data ? res.status(200).json(createSuccessResponse({dataURL})) : res.status(415).json(createErrorResponse(415, `Unable to convert to ${extension}`));
+      return res.status(200).json(createSuccessResponse({dataURL}));
     }
     
     // `data` will be an empty string if attempting to convert to an unsupported content-type
