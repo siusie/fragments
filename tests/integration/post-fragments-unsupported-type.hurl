@@ -12,4 +12,4 @@ user1@email.com:password1
 HTTP/1.1 415
 [Asserts]
 header "Content-Type" contains "application/json"
-body == "{\"status\":\"error\",\"error\":{\"code\":415,\"message\":\"content-type is not supported\"}}"
+body == "{\"status\":\"error\",\"error\":{\"code\":415,\"message\":\"UNSUPPORTED_CONTENT_TYPE\"}}"
