@@ -51,7 +51,7 @@ describe('POST /v1/fragments', () => {
       .set('Content-Type', 'video/ogg')
       .send(Buffer.from('TEST FRAGMENT'));   
     
-    const errorResponse = createErrorResponse(415, 'fragment type is not supported');   
+    const errorResponse = createErrorResponse(415, 'UNSUPPORTED_CONTENT_TYPE');   
     expect(res.statusCode).toBe(415);
     expect(res.body).toStrictEqual(errorResponse);
   });
@@ -83,7 +83,7 @@ describe('POST /v1/fragments', () => {
       .set('Content-Type', 'text/plain')
       .send("");
     
-    const errorResponse = createErrorResponse(400, 'fragment data cannot be empty');
+    const errorResponse = createErrorResponse(400, 'EMPTY_DATA');
     expect(res.statusCode).toBe(400);
     expect(res.body).toStrictEqual(errorResponse);
   });
