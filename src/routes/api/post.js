@@ -10,12 +10,12 @@ module.exports = async (req, res) => {
     // Generate an error response if
     // content-type is invalid (req.body is not a buffer)
     if (!Buffer.isBuffer(req.body)) { 
-      return res.status(415).json(createErrorResponse(415, 'fragment type is not supported'));
+      return res.status(415).json(createErrorResponse(415, 'UNSUPPORTED_CONTENT_TYPE'));
     }
 
     // Empty fragments are not allowed
-    if (!req.body.toString().replace(/\s/g, '').length || !Buffer.byteLength(req.body)) {
-      return res.status(400).json(createErrorResponse(400, 'fragment data cannot be empty'));
+    if (!req.body.toString().replace(/\s/g, '').length) {
+      return res.status(400).json(createErrorResponse(400, 'EMPTY_DATA'));
     }
 
     // getting the content type (specified by the client)
