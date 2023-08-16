@@ -278,7 +278,7 @@ describe('Image fragments', () => {
   test('PNG', async () => {
     const pngFragment = new Fragment({ ownerId: hash('user2@email.com'), type: 'image/png' });
     await pngFragment.save();
-    await pngFragment.setData(readFileSync('./tests/images/test.png', (err) => {
+    await pngFragment.setData(readFileSync('./tests/images/test.PNG', (err) => {
       if (err) logger.error(`Failed to read file. ${err}`);
     }));
     
