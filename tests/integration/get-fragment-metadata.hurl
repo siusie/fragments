@@ -69,3 +69,17 @@ HTTP/1.1 200
 jsonpath "$.status" == "ok"
 jsonpath "$.fragments" count == 2
 # jsonpath "$.fragments.id" includes "{{fragment1_id, fragment2_id}}"
+
+####################################################################
+
+# Delete the current fragments
+
+DELETE {{fragment1_url}}
+
+[BasicAuth]
+user2@email.com:password2
+
+DELETE {{fragment2_url}}
+
+[BasicAuth]
+user2@email.com:password2
