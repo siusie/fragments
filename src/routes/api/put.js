@@ -37,8 +37,8 @@ module.exports = async (req, res) => {
     }
 
     // At this point, the fragment exists and the data + Content-Type in the request are valid 
-    await fragment.save();
     await fragment.setData(req.body);
+    await fragment.save();
 
     // Modify the response body to include a list of valid fragment type conversions
     let updatedSuccessResponse = ({ ...fragment });
