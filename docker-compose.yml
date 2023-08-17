@@ -8,7 +8,7 @@ services:
     container_name: test
     # Use env.jest for Basic Auth
     # Same as `docker run --env-file env.jest ...`
-    env_file: .env
+    env_file: env.jest
     # Use a proper init process (tini)
     init: true
     # Build the Docker Image using the Dockerfile
