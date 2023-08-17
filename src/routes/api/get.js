@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
     return res.status(404).json(createErrorResponse(404, `Invalid URL`));
   }
   catch (err) {
-      logger.error(err);
-      return err;
+    logger.error(err);
+    return err;
   }
 };
