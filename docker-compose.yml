@@ -6,6 +6,7 @@ services:
     # Name this container to skip using the `docker ps` command
     # when the container is running in detached mode
     container_name: test
+    # Use env.jest for Basic Auth
     # Same as `docker run --env-file env.jest ...`
     env_file: .env
     # Use a proper init process (tini)
