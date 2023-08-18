@@ -19,7 +19,6 @@ module.exports = async (req, res) => {
 
     // Empty fragments are not allowed
     if (!req.body.toString().replace(/\s/g, '').length) {
-    //  return !Buffer.isBuffer(req.body) ?  res.status(400).json(createErrorResponse(400, 'A fragment\'s type cannot be changed!')) : res.status(400).json(createErrorResponse(400, 'EMPTY_DATA'));
      return res.status(400).json(createErrorResponse(400, 'NO_EMPTY_CONTENT'));
     }
 
