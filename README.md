@@ -3,7 +3,7 @@ The _fragments_ microservice allows authenticated users to manage text and image
 
 | Name       | Type               | Extension |
 | ---------- | ------------------ | --------- |
-| Plain Text | `text/plain`     | `.txt`    |
+| Plain Text | `text/plain`       | `.txt`    |
 | Markdown   | `text/markdown`    | `.md`     |
 | HTML       | `text/html`        | `.html`   |
 | JSON       | `application/json` | `.json`   |
