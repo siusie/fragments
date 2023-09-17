@@ -1,4 +1,29 @@
-node.js based REST API using Express
+## [Node.js](https://nodejs.org)-based REST API using [Express](https://expressjs.com/)
+The _fragments_ microservice allows authenticated users to manage text and image data over HTTP. Users are able to create, retrieve, update, and delete text/image data, as well as convert them into different formats. The current accepted MIME types are:
+
+| Name       | Type               | Extension |
+| ---------- | ------------------ | --------- |
+| Plain Text | `text/plain`     | `.txt`    |
+| Markdown   | `text/markdown`    | `.md`     |
+| HTML       | `text/html`        | `.html`   |
+| JSON       | `application/json` | `.json`   |
+| PNG Image  | `image/png`        | `.png`    |
+| JPEG Image | `image/jpeg`       | `.jpg`    |
+| WebP Image | `image/webp`       | `.webp`   |
+| GIF Image  | `image/gif`        | `.gif`    |
+
+Valid conversions for each fragment type (others may be added in the future):
+
+| Type               | Valid Conversion Extensions     |
+| ------------------ | ------------------------------- |
+| `text/plain`       | `.txt`                          |
+| `text/markdown`    | `.md`, `.html`, `.txt`          |
+| `text/html`        | `.html`, `.txt`                 |
+| `application/json` | `.json`, `.txt`                 |
+| `image/png`        | `.png`, `.jpg`, `.webp`, `.gif` |
+| `image/jpeg`       | `.png`, `.jpg`, `.webp`, `.gif` |
+| `image/webp`       | `.png`, `.jpg`, `.webp`, `.gif` |
+| `image/gif`        | `.png`, `.jpg`, `.webp`, `.gif` |
 
 ## running scripts
 The scripts created in this lab are found in `package.json`
