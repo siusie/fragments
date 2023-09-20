@@ -7,7 +7,7 @@ services:
     # when the container is running in detached mode
     container_name: test
     # Use env.jest for Basic Auth
-    # Same as `docker run --env-file env.jest ...`
+    # Same as `docker run --env-file env.jest ...` (for Basic Authentication)
     env_file: env.jest
     # Use a proper init process (tini)
     init: true
