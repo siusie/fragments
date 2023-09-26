@@ -38,5 +38,14 @@ The `fragments` microservice consists of:
 # Running this server as a Docker container
 The _fragments_ server can be run locally as a Docker container. Pull the Docker image from [Docker Hub](https://hub.docker.com/repository/docker/siusie/fragments)
 
-## Deploying to AWS
-Every time we deploy a new release to ECS, we have to update our GitHub repo's secrets!
+## Scaling Design Considerations
+The Docker containers were created and run on AWS with these in mind:
+- we should be able to run 1 or 1000 instances of our container (horizontal scaling)
+- use lightweight compute/memory resources per instance (avoid using unnecessary cloud resources)
+- include a Docker health check to periodically check if app is running and healthy
+- use a _stateless design_:
+  - server needs to be able to be shut down at any time
+  - data needs to be stored outside the instance
+  - nothing gets saved on the instance's disk
+- use external storage services (S3, DynamoDB, etc.)
+- cloud instances are throw-away, not forever
