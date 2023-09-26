@@ -49,3 +49,6 @@ The Docker containers were created and run on AWS with these in mind:
   - nothing gets saved on the instance's disk
 - use external storage services (S3, DynamoDB, etc.)
 - cloud instances are throw-away, not forever
+
+## Auto-deployments to AWS
+By pushing git tags to this repository, GitHub Actions automatically deploys an updated Docker image to [Amazon ECS](https://aws.amazon.com/ecs/).
