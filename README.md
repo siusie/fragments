@@ -1,5 +1,5 @@
-## [Node.js](https://nodejs.org)-based REST API using [Express](https://expressjs.com/)
-The _fragments_ microservice allows authenticated users to manage text and image data over HTTP. Users are able to create, retrieve, update, and delete text/image data, as well as convert them into different formats. The microservice is hosted on the cloud (Amazon Web Services). The current accepted MIME types are:
+## The _fragments_ Microservice
+The _fragments_ microservice is a [Node.js](https://nodejs.org)-based REST API using [Express](https://expressjs.com/). It allows authenticated users to manage text and image data over HTTP. Users are able to create, retrieve, update, and delete text/image data, as well as convert them into different formats. The current accepted MIME types are:
 
 | Name       | Type               | Extension |
 | ---------- | ------------------ | --------- |
@@ -12,7 +12,7 @@ The _fragments_ microservice allows authenticated users to manage text and image
 | WebP Image | `image/webp`       | `.webp`   |
 | GIF Image  | `image/gif`        | `.gif`    |
 
-Valid conversions for each fragment type (others may be added in the future):
+The text and image data may be converted to a different format, by specifying the extensionValid conversions for each fragment type (others may be added in the future):
 
 | Type               | Valid Conversion Extensions     |
 | ------------------ | ------------------------------- |
