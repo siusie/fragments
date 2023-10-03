@@ -44,10 +44,6 @@
     "networkMode": "awsvpc",
     "volumes": [],
     "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
     "cpu": "256",
     "memory": "512",
     "tags": []
