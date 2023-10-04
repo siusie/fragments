@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/siusie/fragments.git"
   },
-  "author": "Xi Chen <xchen339@myseneca.ca>",
+  "author": "SC <xchen339@myseneca.ca>",
   "license": "UNLICENSED",
   "devDependencies": {
     "@orangeopensource/hurl": "^4.0.0",
