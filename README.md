@@ -58,4 +58,7 @@ This micro-service uses two types of backend data models:
   1. an in-memory database
   2. an external, permanent storage service
 
-The storage option used is determined at run-time. For testing locally, 
+The storage option used is determined at run-time.
+
+## The _fragment_
+A fragment consists of two parts, metadata and data. *Metadata* is the details about the fragment, like its UUID, the email of the owner (stored as a SHA256 hash), its size and type, and timestamps of when it was created or updated. *Data* refers to the contents of the fragment, stored as a binary blob. In our design, a fragment will be split across AWS S3 (data) and Amazon DynamoDB (metadata).
