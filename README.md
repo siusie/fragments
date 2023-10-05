@@ -1,5 +1,5 @@
 ## The _fragments_ Microservice
-The _fragments_ microservice is a [Node.js](https://nodejs.org)-based REST API using [Express](https://expressjs.com/). It allows authenticated users to manage text and image data over HTTP. Users are able to create, retrieve, update, and delete text/image data, as well as convert them into different formats. The current accepted MIME types are:
+The _fragments_ micro-service is a [Node.js](https://nodejs.org)-based REST API using [Express](https://expressjs.com/). It allows authenticated users to manage text and image data over HTTP. Users are able to create, retrieve, update, and delete text/image data, as well as convert them into different formats. The current accepted MIME types are:
 
 | Name       | Type               | Extension |
 | ---------- | ------------------ | --------- |
@@ -27,9 +27,9 @@ The text and image data may be converted to a different format, by specifying th
 
 
 ## About
-The web application can be accessed [here](). There is an UI to test the _fragments_ server, [here](https://github.com/siusie/fragments-ui).
+There is an UI to test the _fragments_ server, [here](https://github.com/siusie/fragments-ui).
 
-The `fragments` microservice consists of:
+The `fragments` micro-service consists of:
 
 - Amazon Cognito User Pool
 - simple client Web App that authenticates and gets tokens
@@ -50,5 +50,12 @@ The Docker containers were created and run on AWS with these in mind:
 - use external storage services (S3, DynamoDB, etc.)
 - cloud instances are throw-away, not forever
 
-## Auto-deployments to AWS
-By pushing git tags to this repository, GitHub Actions automatically deploys an updated Docker image to [Amazon ECS](https://aws.amazon.com/ecs/).
+## Auto-deployments to Amazon Web Services
+Pushing git tags to this repository triggers GitHub Actions to automatically deploy an updated Docker image to [Amazon ECR](https://aws.amazon.com/ecr/), which is then ran as a container by [Amazon ECS](https://aws.amazon.com/ecs). The server can be accessed [here](http://ec2co-ecsel-1ov4de6u42ej6-2102686928.us-east-1.elb.amazonaws.com:8080/).
+
+## Persistent store
+This micro-service uses two types of backend data models: 
+  1. an in-memory database
+  2. an external, permanent storage service
+
+The storage option used is determined at run-time.
