@@ -55,8 +55,8 @@ Pushing git tags to this repository triggers GitHub Actions to automatically dep
 
 ## Persistent store
 This micro-service uses two types of backend data models: 
-  1. an in-memory database
-  2. an external, permanent storage service
+  1. an in-memory database, for testing purposes
+  2. an external, permanent storage service, for production
 
 The storage option used is determined at run-time.
 
