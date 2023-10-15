@@ -53,7 +53,7 @@ The Docker containers were created and run on AWS with these in mind:
 ## Auto-deployments to Amazon Web Services
 Pushing git tags to this repository triggers GitHub Actions to automatically deploy an updated Docker image to [Amazon ECR](https://aws.amazon.com/ecr/), which is then ran as a container by [Amazon ECS](https://aws.amazon.com/ecs). The server is running [here](http://ec2co-ecsel-1ov4de6u42ej6-2102686928.us-east-1.elb.amazonaws.com:8080/). 
 
-```Server status: temporarily down (while some things are sorted out...)```
+```Server status: temporarily down for maintenance...```
 
 ## Persistent store
 This micro-service uses two types of backend data models: 
