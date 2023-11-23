@@ -25,6 +25,14 @@ The text and image data may be converted to a different format, by specifying th
 | `image/webp`       | `.png`, `.jpg`, `.webp`, `.gif` |
 | `image/gif`        | `.png`, `.jpg`, `.webp`, `.gif` |
 
+## Tools Used
+
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/en/)
+- [Jest](https://jestjs.io/)
+- [Docker](https://www.docker.com/)
+- [Pino logger](https://getpino.io/#/)
+
 
 ## About
 There is an UI to test the _fragments_ server, [here](https://github.com/siusie/fragments-ui).
