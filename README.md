@@ -43,6 +43,24 @@ The `fragments` micro-service consists of:
 - simple client Web App that authenticates and gets tokens
 - microservice that can secure HTTP access via JWT tokens
 
+### User Interface
+The UI to test this microservice:
+
+![image](https://github.com/siusie/fragments/assets/93149998/370e409d-9e1d-40ab-a5a1-c9fed1ba1415)
+
+Existing images, text data, JSON are found under the 'Fragments' tab:
+
+![image](https://github.com/siusie/fragments/assets/93149998/47ac9ea8-0b94-490e-a15c-635edb5a0d92)
+
+Search for a fragment by its ID:
+
+![image](https://github.com/siusie/fragments/assets/93149998/03636bda-42f0-4c49-b12b-b503732671c1)
+
+The displayed data can also be converted by affixing an accepted extension (for example, markdown --> HTML):
+
+![image](https://github.com/siusie/fragments/assets/93149998/4ca3ff59-fd85-4d48-bfad-bbbd7b4d7065)
+
+
 # Running this server as a Docker container
 The _fragments_ server can be run locally as a Docker container. Pull the Docker image from [Docker Hub](https://hub.docker.com/repository/docker/siusie/fragments)
 
